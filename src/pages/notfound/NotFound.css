@@ -1,0 +1,26 @@
+.notfound {
+    /*DESC*/
+    @media (min-width: 70em) {
+        margin: 5em;
+    }
+
+    /*MOBILE*/
+    @media (max-width: 70em) {
+        margin: 1em;
+    }
+
+    .notice-item h3 span.time-publication {
+        font-size: 0.9em;
+        color: gray;
+        margin-left: 1em;
+        white-space: nowrap;
+    }
+
+    .notice-item h3 span {
+        flex: 1;
+    }
+
+    a {
+        color: black;
+    }
+}

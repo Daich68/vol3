@@ -1,0 +1,293 @@
+.mini-tree-nav {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 1000;
+}
+
+.mini-tree-toggle {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  color: #333;
+  will-change: transform;
+}
+
+.mini-tree-toggle:hover {
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000;
+}
+
+.mini-tree-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.music-toggle-mini {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.music-toggle-mini:hover {
+  opacity: 0.8;
+}
+
+.music-toggle-mini:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.music-toggle-mini img {
+  width: 5rem;
+  height: auto;
+}
+
+.mini-tree-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 998;
+}
+
+.mini-tree-menu {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  min-width: 200px;
+  z-index: 999;
+  font-family: 'Entropia', serif;
+}
+
+.mini-tree-trunk {
+  position: absolute;
+  left: 1.5rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.1) 0%, 
+    rgba(0, 0, 0, 0.15) 50%, 
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+.mini-tree-branches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.mini-tree-branch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-family: 'Entropia', serif;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  position: relative;
+  will-change: transform;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.mini-tree-branch::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* О проекте - простые линии */
+.mini-tree-branch[data-branch-id="about"]::after {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 12px,
+    rgba(0, 0, 0, 0.15) 12px,
+    rgba(0, 0, 0, 0.15) 14px
+  );
+}
+
+/* Записи - волнистые линии */
+.mini-tree-branch[data-branch-id="notes"]::after {
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 6px,
+      rgba(0, 0, 0, 0.15) 6px,
+      rgba(0, 0, 0, 0.15) 8px
+    );
+}
+
+/* Поиск - точки */
+.mini-tree-branch[data-branch-id="search"]::after {
+  background: 
+    radial-gradient(circle at 25% 50%, rgba(0, 0, 0, 0.15) 2px, transparent 2px),
+    radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 0.15) 2px, transparent 2px),
+    radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.1) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 75%, rgba(0, 0, 0, 0.1) 1.5px, transparent 1.5px);
+  background-size: 25px 20px;
+}
+
+/* Философия - концентрические круги */
+.mini-tree-branch[data-branch-id="philosophy"]::after {
+  background: 
+    radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.12) 35%, rgba(0, 0, 0, 0.12) 38%, transparent 38%);
+  background-size: 35px 35px;
+}
+
+/* Профиль - органические пятна */
+.mini-tree-branch[data-branch-id="person"]::after {
+  background: 
+    radial-gradient(ellipse at 40% 50%, rgba(0, 0, 0, 0.12) 35%, transparent 65%);
+  background-size: 30px 22px;
+}
+
+/* Вход - диагональные штрихи */
+.mini-tree-branch[data-branch-id="login"]::after {
+  background: 
+    repeating-linear-gradient(
+      60deg,
+      transparent,
+      transparent 5px,
+      rgba(0, 0, 0, 0.15) 5px,
+      rgba(0, 0, 0, 0.15) 7px
+    );
+}
+
+.mini-tree-branch:hover::after {
+  opacity: 0.15;
+}
+
+.mini-tree-branch.active::after {
+  opacity: 0.18;
+}
+
+.mini-tree-branch::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 50%;
+  width: 1.5rem;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.mini-tree-branch:hover {
+  background: rgba(0, 0, 0, 0.03);
+  color: #000;
+}
+
+.mini-tree-branch:hover::before {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mini-tree-branch.active {
+  font-weight: bold;
+  color: #000;
+}
+
+.mini-tree-branch.active::before {
+  background: rgba(0, 0, 0, 0.4);
+  height: 2px;
+}
+
+.branch-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.mini-tree-branch.active .branch-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.branch-label {
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+  .mini-tree-nav {
+    top: 1rem;
+    left: 1rem;
+  }
+  
+  .mini-tree-toggle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .mini-tree-toggle svg {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .music-toggle-mini {
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  .music-toggle-mini img {
+    width: 3.5rem;
+  }
+  
+  .mini-tree-menu {
+    top: 60px;
+    padding: 1rem;
+    min-width: 160px;
+  }
+  
+  .mini-tree-branch {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.5rem;
+  }
+}

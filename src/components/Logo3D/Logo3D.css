@@ -1,0 +1,60 @@
+.logo-3d-container {
+  width: 100%;
+  max-width: 700px;
+  height: 600px;
+  margin: 0 auto 1rem;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+}
+
+.logo-3d-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: glow-pulse 4s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.logo-3d-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+  .logo-3d-container {
+    height: 450px;
+    max-width: 100%;
+  }
+  
+  .logo-3d-container::before {
+    width: 90%;
+    height: 90%;
+  }
+}
+
+@media (max-width: 500px) {
+  .logo-3d-container {
+    height: 350px;
+  }
+}

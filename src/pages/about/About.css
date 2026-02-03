@@ -1,0 +1,148 @@
+.about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    background: white;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Tree Section */
+.tree-section {
+    width: 100%;
+    padding: 2em 0 3em; /* Увеличено */
+}
+
+/* Features Section */
+.features-section {
+    max-width: 46.875em;
+    margin: 0 auto 2em; /* Увеличено */
+    padding: 0 1.5em; /* Увеличено */
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5em; /* Увеличено */
+}
+
+.feature-item {
+    text-align: center;
+    padding: 1.5em 0.8em; /* Увеличено */
+    background: white;
+    border: 0.052em solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+    transition: left 0.5s ease;
+}
+
+.feature-item:hover::before {
+    left: 100%;
+}
+
+.feature-item:hover {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.feature-number {
+    font-family: 'DeltaBlock', 'Babayka', monospace;
+    font-size: 3.5em; /* Увеличено */
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 0.3em; /* Увеличено */
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.feature-label {
+    font-family: 'Entropia', serif;
+    font-size: 0.9em; /* Увеличено */
+    color: #666;
+    letter-spacing: 0.05em;
+}
+
+.tree-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em; /* Увеличено */
+    margin: 2em 0 1.5em; /* Увеличено */
+    padding: 0 1.5em; /* Увеличено */
+}
+
+.divider-line {
+    flex: 1;
+    height: 0.052em;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
+    max-width: 10.417em;
+}
+
+.divider-text {
+    font-family: 'Entropia', serif;
+    font-size: 1.2em; /* Увеличено */
+    color: #999;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2em; /* Увеличено */
+    }
+
+    .feature-item {
+        padding: 1.2em 0.8em; /* Увеличено */
+    }
+
+    .feature-number {
+        font-size: 2.8em; /* Увеличено */
+    }
+
+    .feature-label {
+        font-size: 0.85em; /* Увеличено */
+    }
+
+    .divider-text {
+        font-size: 1em; /* Увеличено */
+    }
+
+    .tree-section {
+        padding: 1.2em 0 2em; /* Увеличено */
+    }
+
+    .features-section {
+        padding: 0 1.2em; /* Увеличено */
+        margin-bottom: 1.5em; /* Увеличено */
+    }
+
+    .tree-divider {
+        margin: 1.5em 0 1.2em; /* Увеличено */
+        padding: 0 1.2em; /* Увеличено */
+        gap: 1.2em; /* Увеличено */
+    }
+
+    .divider-line {
+        max-width: 8em; /* Увеличено */
+    }
+}

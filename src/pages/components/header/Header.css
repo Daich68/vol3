@@ -1,0 +1,58 @@
+.menu{
+    .container-icons{
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    .menu-icon{
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        padding: 0;
+        transition: opacity 0.2s ease;
+        position: relative;
+    }
+
+    .menu-icon:hover {
+        opacity: 0.8;
+    }
+
+    .menu-icon:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+    }
+
+    /* Active page indicator */
+    a[aria-current="page"] .menu-icon::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 2px;
+        background: currentColor;
+    }
+
+    /*DESC*/
+    @media (min-width: 950px) {
+        .menu-icon img{
+            width: 8rem;
+            margin-right: 4rem;
+        }
+
+    }
+
+    /*MOBILE*/
+    @media (max-width: 950px) {
+        .menu-icon img{
+            width: 5rem;
+            margin-right: 0;
+        }
+        
+        .container-icons{
+            gap: 0.25rem;
+        }
+    }
+}

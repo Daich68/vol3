@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  font-family:'Entropia', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Hide default scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox - hide scrollbar */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/*DESC*/
+@media (min-width: 700px) {
+  html {
+    font-size: 1vw; /* 1rem = 1vw */
+  }
+}
+
+/*MOBILE*/
+@media (max-width: 700px) {
+  html {
+    font-size: 1.4vw; /* Немного больше для мобильных */
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Focus visible styles for better keyboard navigation */
+*:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+  font-size: 1vw; /* 1rem = 1vw */
+}
+
+/* Better text rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Improve button and link accessibility */
+button,
+a {
+  touch-action: manipulation;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip to main content link for screen readers */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1em;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+}
+
+.skip-to-main:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+}
+
+@font-face {
+  font-family: 'Babayka';
+  src: url('static/fonts/babayka_font.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DeltaBlock';
+  src: url('static/fonts/DeltaBlock-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Entropia';
+  src: url('static/fonts/Entropia-Light.otf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'EntropiaBacks';
+  src: url('static/fonts/Entropia-Light-Backslant.otf') format('truetype');
+  font-display: swap;
+}
+
+iframe {
+  display: none;
+}

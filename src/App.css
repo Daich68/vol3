@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}

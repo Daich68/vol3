@@ -1,0 +1,27 @@
+version: '2'
+services:
+  vol3-ui:
+    restart: always
+    container_name: vol3-ui
+    image: vol3-ui-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    mem_limit: 636m
+    networks:
+      - traefik
+      - default
+    labels:  # Move labels here
+      - "traefik.enable=true"
+      - "traefik.http.routers.vol3-ui.rule=Host(`vol-3.web-almanac.com`)"
+      - "traefik.http.routers.vol3-ui.entrypoints=websecure"
+      - "traefik.http.routers.vol3-ui.tls.certresolver=myresolver"
+      - "traefik.docker.network=traefik"
+
+networks:
+  default:
+    external: false
+  traefik:
+    external: true
