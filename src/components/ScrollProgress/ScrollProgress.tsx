@@ -120,6 +120,22 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({ containerRef }) 
             </span>
           </div>
         </motion.div>
+
+        {/* Telegram Link at the bottom */}
+        <a
+          href="https://t.me/web_almanac"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="telegram-scroll-link"
+          title="Telegram"
+        >
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 4L4 14L12 18L28 4Z" fill="currentColor" opacity="0.2" />
+            <path d="M28 4L12 18V28L16 22L28 4Z" fill="currentColor" opacity="0.1" />
+            <path d="M28 4L4 14L12 18L16 22L28 4Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M12 18V24L15 21" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </div>
     </div>
   );

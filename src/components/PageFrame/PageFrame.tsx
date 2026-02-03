@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import './PageFrame.css';
 import { ScrollProgress } from '../ScrollProgress/ScrollProgress';
 import { InteractiveObject } from '../InteractiveObject/InteractiveObject';
+import { LiquidBackground } from '../LiquidBackground/LiquidBackground';
 import { useLenis } from '../../hooks/useLenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -33,6 +34,9 @@ export const PageFrame: React.FC<PageFrameProps> = ({ children, showScroll = tru
 
     return (
         <div className="page-frame-container">
+            {/* Liquid Interactive Background */}
+            <LiquidBackground />
+
             <div className="page-frame-layout">
                 <div className="page-frame-inner-border">
                     <div className="page-frame-content" ref={contentRef}>

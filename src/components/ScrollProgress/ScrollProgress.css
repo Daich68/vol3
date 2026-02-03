@@ -9,6 +9,8 @@
   justify-content: center;
   z-index: 20;
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .custom-scroll-track {
@@ -29,6 +31,9 @@
   min-width: 100%;
   object-fit: cover;
   opacity: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 
   /* Center vertically so it pokes out top and bottom equally */
   transform: translateY(0%) translateX(15%);
@@ -79,6 +84,48 @@
   font-size: 0.9vw;
   color: #333;
   z-index: 2;
+}
+
+/* Telegram Link Style */
+.telegram-scroll-link {
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-180%);
+  /* Moved lower and further left */
+  width: 3.2vw;
+  height: 3.2vw;
+  min-width: 35px;
+  min-height: 35px;
+  max-width: 50px;
+  max-height: 50px;
+
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: auto;
+  z-index: 40;
+  text-decoration: none;
+}
+
+.telegram-scroll-link:hover {
+  transform: translateX(-180%) scale(1.15);
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.telegram-scroll-link svg {
+  width: 50%;
+  height: 50%;
 }
 
 /* Responsive adjustments */
