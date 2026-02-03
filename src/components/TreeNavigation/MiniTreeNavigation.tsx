@@ -127,23 +127,13 @@ export const MiniTreeNavigation: React.FC = () => {
         </AnimatePresence>
 
         {isExpanded && (
-          <div 
-            className="mini-tree-overlay" 
+          <div
+            className="mini-tree-overlay"
             onClick={() => setIsExpanded(false)}
             aria-hidden="true"
           />
         )}
       </div>
-
-      <button 
-        className="music-toggle-mini"
-        onClick={handleToggleSound}
-        aria-label={isPlaying ? "Выключить музыку" : "Включить музыку"}
-        aria-pressed={isPlaying}
-        title={isPlaying ? "Выключить музыку" : "Включить музыку"}
-      >
-        <img src={isPlaying ? ear : bliss} alt="" aria-hidden="true"/>
-      </button>
     </>
   );
 };

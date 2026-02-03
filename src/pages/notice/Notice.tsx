@@ -1,115 +1,182 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { GetNotices } from "../../requests/Api";
 import { Notice } from "../../entity/Entity";
-import "./Notice.css";
 import { Loader } from "../components/loader/Loader";
 import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
+import { PageFrame } from "../../components/PageFrame/PageFrame";
 import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "./Notice.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const NoticePage: React.FC = () => {
     const [notices, setNotices] = useState<Notice[]>();
-    const [visibleNotices, setVisibleNotices] = useState<{ [key: number]: boolean }>({});
+    const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string>("");
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchNotices = async () => {
             setIsLoading(true);
             setError("");
-            
             try {
                 const data = await GetNotices();
                 setNotices(data);
             } catch (error) {
                 console.error(error);
-                setError("не удалось загрузить заметки. попробуйте обновить страницу");
+                setError("не удалось загрузить заметки.");
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchNotices();
     }, []);
 
-    const toggleVisibility = (index: number) => {
-        setVisibleNotices((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
-    };
+    useEffect(() => {
+        if (isLoading || !notices) return;
 
-    const handleKeyPress = (e: React.KeyboardEvent, index: number) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleVisibility(index);
-        }
-    };
+        const timer = setTimeout(() => {
+            const ctx = gsap.context(() => {
+                // Hero Animation
+                gsap.from(".notice-hero h1", {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: "expo.out"
+                });
+
+                // Notices Staggered Reveal
+                gsap.from(".notice-item", {
+                    scrollTrigger: {
+                        trigger: ".notices-wrapper",
+                        start: "top 80%",
+                    },
+                    x: (i) => i % 2 === 0 ? -50 : 50,
+                    opacity: 0,
+                    stagger: 0.15,
+                    duration: 1.2,
+                    ease: "power3.out"
+                });
+
+                // Snapping
+                ScrollTrigger.create({
+                    trigger: ".notice-container",
+                    start: "top top",
+                    end: "bottom bottom",
+                    snap: {
+                        snapTo: [0, 0.5, 1],
+                        duration: { min: 0.4, max: 0.6 },
+                        delay: 0.1,
+                        ease: "power1.inOut"
+                    }
+                });
+
+                ScrollTrigger.refresh();
+            }, containerRef);
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [isLoading, notices]);
 
     if (isLoading) {
-        return <Loader />;
-    }
-
-    if (error) {
         return (
-            <div className="notice">
-                <div className="error-state" role="alert">
-                    <p>{error}</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!notices || notices.length === 0) {
-        return (
-            <div className="notice">
-                <h3>notes - это журнал внутри вольтри; notes - это статьи, эссе, работы, заметки о вебе;</h3>
-                <div className="empty-state">
-                    <p>пока нет заметок</p>
-                </div>
-            </div>
+            <PageFrame>
+                <div className="loading-container"><Loader /></div>
+            </PageFrame>
         );
     }
 
     return (
-        <div className="notice">
-            <ScrollProgress />
-            <h3>notes - это журнал внутри вольтри; notes - это статьи, эссе, работы, заметки о вебе;</h3>
-            {notices.map((n: Notice, index: number) => {
-                const isExpanded = visibleNotices[index];
-                
-                return (
-                    <article key={index} className="notice-item">
-                        <button
-                            onClick={() => toggleVisibility(index)}
-                            onKeyPress={(e) => handleKeyPress(e, index)}
-                            className="notice-header"
-                            aria-expanded={isExpanded}
-                            aria-controls={`notice-content-${index}`}
-                        >
-                            <span className="notice-title">
-                                <span className="expand-icon" aria-hidden="true">
-                                    {isExpanded ? "▼" : "▶"}
-                                </span>
-                                {" "}
-                                {n.author} - {n.title}
-                            </span>
-                            <time 
-                                className="time-publication"
-                                dateTime={new Date(n.time_publication).toISOString()}
-                            >
-                                {GetPrettyTimePub({ date: new Date(n.time_publication) })}
-                            </time>
-                        </button>
-                        {isExpanded && (
-                            <div 
-                                id={`notice-content-${index}`}
-                                className="notice-content"
-                                dangerouslySetInnerHTML={{ __html: n.text_html }}
-                            />
+        <PageFrame>
+            <div className="notice" ref={containerRef}>
+                <div className="notice-container">
+                    {/* STAGE 1: Hero */}
+                    <section className="notice-hero">
+                        <h1>notes</h1>
+                        <p>Статьи и работы, оформленные в виде ветвей знаний вольтри.</p>
+                    </section>
+
+                    {/* STAGE 2: Notices Tree-Style List */}
+                    <section className="notice-list-section">
+                        {error ? (
+                            <div className="error-state">{error}</div>
+                        ) : (
+                            <div className="notices-wrapper">
+                                {notices?.map((n: Notice, index: number) => (
+                                    <div key={index} className="notice-item">
+                                        <button
+                                            className="notice-button"
+                                            onClick={() => setSelectedNotice(n)}
+                                        >
+                                            <video
+                                                className="notice-video-hover"
+                                                src="/grok-video-7223f3a3-740c-4475-94e7-61fb94c7e026.mp4"
+                                                autoPlay
+                                                loop
+                                                muted
+                                                playsInline
+                                            />
+                                            <div className="notice-video-frame" />
+
+                                            <span className="notice-title">{n.title}</span>
+                                            <div className="notice-meta">
+                                                <span>{n.author}</span>
+                                                <span>{GetPrettyTimePub({ date: new Date(n.time_publication) })}</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         )}
-                    </article>
-                );
-            })}
-        </div>
+                    </section>
+
+                    {/* STAGE 3: Final Aesthetic Stop */}
+                    <section className="notice-thank-you">
+                        <h2>спасибо за чтение</h2>
+                    </section>
+                </div>
+            </div>
+
+            {/* Reading Mode Overlay */}
+            {selectedNotice && (
+                <div
+                    className="reading-overlay"
+                    ref={overlayRef}
+                    onClick={() => setSelectedNotice(null)}
+                    data-lenis-prevent
+                >
+                    {/* Themed Scroll Progress for the popup */}
+                    <div className="reading-sidebar">
+                        <ScrollProgress containerRef={overlayRef} mode="linear" />
+                    </div>
+
+                    <div className="reading-content" onClick={e => e.stopPropagation()}>
+                        <header style={{ marginBottom: '4rem' }}>
+                            <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>{selectedNotice.title}</h1>
+                            <div style={{ color: '#888', letterSpacing: '0.1em' }}>
+                                {selectedNotice.author} — {GetPrettyTimePub({ date: new Date(selectedNotice.time_publication) })}
+                            </div>
+                        </header>
+                        <div
+                            className="article-body"
+                            dangerouslySetInnerHTML={{ __html: selectedNotice.text_html }}
+                        />
+                        <div style={{ marginTop: '8rem', textAlign: 'center' }}>
+                            <button
+                                className="close-text-btn"
+                                onClick={() => setSelectedNotice(null)}
+                            >
+                                вернуться к журналу / back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </PageFrame>
     );
 };

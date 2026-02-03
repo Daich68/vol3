@@ -4,6 +4,7 @@ import './ScrollProgress.css';
 
 interface ScrollProgressProps {
   containerRef?: React.RefObject<HTMLElement>;
+  mode?: 'snapping' | 'linear';
 }
 
 /**
@@ -21,7 +22,10 @@ const ProgressNumber = ({ value }: { value: any }) => {
   return <>{displayValue.toString().padStart(2, '0')}</>;
 };
 
-export const ScrollProgress: React.FC<ScrollProgressProps> = ({ containerRef }) => {
+export const ScrollProgress: React.FC<ScrollProgressProps> = ({
+  containerRef,
+  mode = 'snapping'
+}) => {
   // If containerRef is provided, track scroll of that element. 
   // Otherwise fallback to window scroll (React default behavior for useScroll without args)
   // Note: for useScroll(ref) to work, the ref must be attached to the scrollable element.
@@ -42,25 +46,26 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({ containerRef }) 
   const stop2 = '50%';
   const stop3 = '80%';
 
-  // Logic: Widen the transition gap to make movement less "jerky"
-  // 0 - 0.25: Stay at stop1
-  // 0.25 - 0.40: Move to stop2 (15% scroll distance area for transition)
-  // 0.40 - 0.60: Stay at stop2
-  // 0.60 - 0.75: Move to stop3 (15% scroll distance area)
-  // 0.75 - 1.0: Stay at stop3
+  // Linear transition for articles, Snapping for the 3-stage pages
   const topPosition = useTransform(
     smoothProgress,
-    [0, 0.25, 0.40, 0.60, 0.75, 1],
-    [stop1, stop1, stop2, stop2, stop3, stop3]
+    mode === 'snapping'
+      ? [0, 0.25, 0.40, 0.60, 0.75, 1]
+      : [0, 1],
+    mode === 'snapping'
+      ? [stop1, stop1, stop2, stop2, stop3, stop3]
+      : [stop1, stop3]
   );
 
   // Horizontal movement in relative units (%) relative to the wrapper width
-  // Positive = right, Negative = left
-  // 25% of wrapper width (~percent of 8vw)
   const xPosition = useTransform(
     smoothProgress,
-    [0, 0.25, 0.40, 0.60, 0.75, 1],
-    ['0%', '0%', '25%', '25%', '-10%', '-10%']
+    mode === 'snapping'
+      ? [0, 0.25, 0.40, 0.60, 0.75, 1]
+      : [0, 0.5, 1],
+    mode === 'snapping'
+      ? ['0%', '0%', '25%', '25%', '-10%', '-10%']
+      : ['0%', '15%', '-5%']
   );
 
   // Subtle scale animation during movement
