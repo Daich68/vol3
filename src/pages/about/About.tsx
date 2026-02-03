@@ -2,47 +2,47 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { TreeNavigation } from "../../components/TreeNavigation/TreeNavigation";
-import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
+import { PageFrame } from "../../components/PageFrame/PageFrame";
 import "./About.css"
 
 
 export const About: React.FC = () => {
-    const navigate = useNavigate();
-    const treeRef = useRef<HTMLDivElement>(null);
-    
-    const isTreeInView = useInView(treeRef, { once: false, amount: 0.3 });
+  const navigate = useNavigate();
+  const treeRef = useRef<HTMLDivElement>(null);
 
-    return (
+  // We keep useInView for triggering animations of children, but main container stays visible
+  const isTreeInView = useInView(treeRef, { once: false, amount: 0.3 });
+
+  return (
+    <PageFrame>
       <div className={"about"}>
-        <ScrollProgress />
-        
         <motion.div
           ref={treeRef}
           className="tree-section"
+          // Remove the dimming effect. Initial 0 for fade-in on load, then always 1.
           initial={{ opacity: 0 }}
-          animate={{ opacity: isTreeInView ? 1 : 0.3 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Статистика/Особенности */}
-          <motion.div 
+          <motion.div
             className="features-section"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: isTreeInView ? 1 : 0,
-              y: isTreeInView ? 0 : 20
+            animate={{
+              opacity: 1, // Always visible once loaded
+              y: 0
             }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="features-grid">
-              <motion.div 
+              <motion.div
                 className="feature-item"
-                whileHover={{ 
+                whileHover={{
                   y: -5,
                   boxShadow: "0 8px 20px rgba(0, 0, 0, 0.08)"
                 }}
                 transition={{ duration: 0.3 }}
               >
-                <motion.div 
+                <motion.div
                   className="feature-number"
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
@@ -51,16 +51,16 @@ export const About: React.FC = () => {
                 </motion.div>
                 <div className="feature-label">пост в день</div>
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="feature-item"
-                whileHover={{ 
+                whileHover={{
                   y: -5,
                   boxShadow: "0 8px 20px rgba(0, 0, 0, 0.08)"
                 }}
                 transition={{ duration: 0.3 }}
               >
-                <motion.div 
+                <motion.div
                   className="feature-number"
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
@@ -69,16 +69,16 @@ export const About: React.FC = () => {
                 </motion.div>
                 <div className="feature-label">слов в словаре</div>
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="feature-item"
-                whileHover={{ 
+                whileHover={{
                   y: -5,
                   boxShadow: "0 8px 20px rgba(0, 0, 0, 0.08)"
                 }}
                 transition={{ duration: 0.3 }}
               >
-                <motion.div 
+                <motion.div
                   className="feature-number"
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
@@ -90,43 +90,31 @@ export const About: React.FC = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="tree-divider"
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ 
-              opacity: isTreeInView ? 1 : 0,
-              scale: isTreeInView ? 1 : 0.9
+            animate={{
+              opacity: 1,
+              scale: 1
             }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <motion.div 
+            <div
               className="divider-line"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: isTreeInView ? 1 : 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              style={{ transform: "scaleX(1)" }} // Static for now to ensure visibility
             />
-            <motion.div 
-              className="divider-text"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ 
-                opacity: isTreeInView ? 1 : 0,
-                y: isTreeInView ? 0 : 10
-              }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <div className="divider-text">
               навигация
-            </motion.div>
-            <motion.div 
+            </div>
+            <div
               className="divider-line"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: isTreeInView ? 1 : 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              style={{ transform: "scaleX(1)" }}
             />
           </motion.div>
+
           <TreeNavigation />
         </motion.div>
-
-
       </div>
-    );
+    </PageFrame>
+  );
 };

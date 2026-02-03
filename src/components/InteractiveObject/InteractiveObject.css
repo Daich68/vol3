@@ -1,0 +1,77 @@
+/* Base positioning for both instances */
+.interactive-object-container {
+    position: absolute;
+    width: 50vw;
+    height: 50vw;
+    max-width: 800px;
+    max-height: 800px;
+    z-index: 100;
+    display: flex;
+    pointer-events: none;
+    /* Container doesn't block clicks */
+}
+
+/* Bottom-right corner (default) */
+.interactive-object-container.bottom-right {
+    bottom: -12%;
+    right: 60%;
+    justify-content: flex-end;
+    align-items: flex-end;
+    transform: scaleX(-1);
+}
+
+/* Top-left corner (mirrored) - adjusted for exact corner placement */
+.interactive-object-container.top-left {
+    top: -50%;
+    /* Deeper into corner */
+    left: -10%;
+    /* Deeper into corner */
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Mirror the image for top-left */
+.interactive-object-container.top-left .interactive-image {
+    transform: scaleX(-1) scaleY(-1);
+    /* Flip both horizontally and vertically */
+}
+
+.interactive-object-card {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    cursor: default;
+    will-change: transform;
+    pointer-events: none;
+    /* Card doesn't block clicks - we use global mouse tracking */
+    display: block;
+}
+
+.interactive-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom right;
+    display: block;
+    filter: drop-shadow(-20px -20px 40px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+    /* Image itself doesn't capture clicks */
+}
+
+/* Adjust object-position for top-left */
+.interactive-object-container.top-left .interactive-image {
+    object-position: top left;
+    filter: drop-shadow(20px 20px 40px rgba(0, 0, 0, 0.3));
+    /* Shadow in opposite direction */
+}
+
+.interactive-glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    /* Glare doesn't capture clicks */
+}

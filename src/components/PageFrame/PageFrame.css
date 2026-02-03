@@ -1,0 +1,116 @@
+.page-frame-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #dcdcdc;
+    /* Outer world background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.page-frame-layout {
+    width: 90vw;
+    height: 85vh;
+    max-width: 1600px;
+
+    /* Outer Border Style */
+    border: 1px solid #777;
+
+    /* The "Gap" */
+    padding: 6px;
+    background-color: #dcdcdc;
+
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+}
+
+.page-frame-inner-border {
+    width: 100%;
+    height: 100%;
+
+    /* Inner Border Style */
+    border: 1px solid #777;
+
+    display: flex;
+    background-color: #ffffff;
+    overflow: visible;
+    /* Allow sidebar tree to stick out */
+    position: relative;
+}
+
+.page-frame-content {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+    padding: 4rem;
+    /* Ensure content clips itself if needed, but usually auto scroll handles it */
+}
+
+/* Ensure content doesn't leak over the tree if z-index is weird, 
+   but tree needs to be higher index to overlay border. */
+
+.content-wrapper {
+    width: 100%;
+    min-height: 100%;
+}
+
+.page-frame-sidebar {
+    width: 12vw;
+    min-width: 100px;
+    height: 100%;
+    background-color: #9e9e9e;
+    position: relative;
+    border-left: 1px solid #777;
+    z-index: 10;
+}
+
+/* Custom Scrollbar hiding */
+.page-frame-content::-webkit-scrollbar {
+    display: none;
+}
+
+.page-frame-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .page-frame-layout {
+        width: 96vw;
+        height: 92vh;
+        padding: 4px;
+    }
+
+    .page-frame-content {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-frame-layout {
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .page-frame-inner-border {
+        border: none;
+        flex-direction: column;
+        overflow: hidden;
+        /* Reset overflow on mobile? */
+    }
+
+    .page-frame-sidebar {
+        display: none;
+    }
+
+    .page-frame-content {
+        padding: 1.5rem;
+    }
+}

@@ -1,205 +1,126 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import './ScrollProgress.css';
 
-export const ScrollProgress: React.FC = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+interface ScrollProgressProps {
+  containerRef?: React.RefObject<HTMLElement>;
+}
+
+/**
+ * Component to render the numeric value of the MotionValue
+ */
+const ProgressNumber = ({ value }: { value: any }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    return value.onChange((latest: number) => {
+      setDisplayValue(Math.round(latest * 100));
+    });
+  }, [value]);
+
+  return <>{displayValue.toString().padStart(2, '0')}</>;
+};
+
+export const ScrollProgress: React.FC<ScrollProgressProps> = ({ containerRef }) => {
+  // If containerRef is provided, track scroll of that element. 
+  // Otherwise fallback to window scroll (React default behavior for useScroll without args)
+  // Note: for useScroll(ref) to work, the ref must be attached to the scrollable element.
+  const { scrollYProgress } = useScroll({
+    container: containerRef || undefined
+  });
+
+  // Softer spring inputs for smoother feel
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 20,
     restDelta: 0.001
   });
 
-  const [progress, setProgress] = useState(0);
+  // Define 3 stop points on the screen 
+  // All units relative to container height (which is 100vh)
+  const stop1 = '20%';
+  const stop2 = '50%';
+  const stop3 = '80%';
 
-  useEffect(() => {
-    return scrollYProgress.onChange((latest) => {
-      setProgress(latest);
-    });
-  }, [scrollYProgress]);
+  // Logic: Widen the transition gap to make movement less "jerky"
+  // 0 - 0.25: Stay at stop1
+  // 0.25 - 0.40: Move to stop2 (15% scroll distance area for transition)
+  // 0.40 - 0.60: Stay at stop2
+  // 0.60 - 0.75: Move to stop3 (15% scroll distance area)
+  // 0.75 - 1.0: Stay at stop3
+  const topPosition = useTransform(
+    smoothProgress,
+    [0, 0.25, 0.40, 0.60, 0.75, 1],
+    [stop1, stop1, stop2, stop2, stop3, stop3]
+  );
 
-  // Генерация спиральных веток
-  const generateSpiralBranches = () => {
-    const branches: Array<{
-      position: number;
-      side: 'left' | 'right';
-      angle: number;
-      length: number;
-      thickness: number;
-      curve: string;
-      spiralOffset: number;
-    }> = [];
-    
-    const positions = [0.1, 0.18, 0.26, 0.34, 0.42, 0.5, 0.58, 0.66, 0.74, 0.82, 0.9];
-    const spiralTurns = 3;
-    
-    positions.forEach((pos, index) => {
-      const heightFactor = 1 - pos;
-      const baseLength = 40;
-      const baseThickness = 2.5;
-      
-      // Вычисляем положение на спирали
-      const angle = (pos) * spiralTurns * Math.PI * 2;
-      const radius = 3 * (1 - pos * 0.7);
-      const spiralX = Math.cos(angle) * radius;
-      
-      // Определяем сторону по положению на спирали
-      const side = Math.cos(angle) > 0 ? 'right' : 'left';
-      
-      // Угол ветки зависит от положения на спирали
-      const branchAngle = (angle * 180 / Math.PI) + (side === 'left' ? 180 : 0);
-      
-      // Кривизна для создания спирали
-      const curvature = index * 12;
-      const length = baseLength * (0.5 + heightFactor * 0.5);
-      
-      branches.push({
-        position: pos,
-        side: side,
-        angle: branchAngle,
-        length: length,
-        thickness: baseThickness * (0.4 + heightFactor * 0.6),
-        curve: `M 0,0 Q ${curvature},${-curvature * 0.4} ${length},${-curvature * 0.2}`,
-        spiralOffset: spiralX
-      });
-    });
-    
-    return branches;
-  };
+  // Horizontal movement in relative units (%) relative to the wrapper width
+  // Positive = right, Negative = left
+  // 25% of wrapper width (~percent of 8vw)
+  const xPosition = useTransform(
+    smoothProgress,
+    [0, 0.25, 0.40, 0.60, 0.75, 1],
+    ['0%', '0%', '25%', '25%', '-10%', '-10%']
+  );
 
-  const branches = generateSpiralBranches();
-
-  // Ствол тоже закручивается
-  const getTrunkPath = () => {
-    const height = 100;
-    const spiralTurns = 3; // Количество оборотов спирали
-    const radius = 3; // Радиус спирали
-    
-    let path = `M 0,0`;
-    
-    for (let i = 0; i <= height; i += 0.5) {
-      // Спираль: x и y меняются по синусоиде и косинусоиде
-      const angle = (i / height) * spiralTurns * Math.PI * 2;
-      const currentRadius = radius * (1 - i / height * 0.7); // Радиус уменьшается к верху
-      
-      const x = Math.cos(angle) * currentRadius;
-      const y = i;
-      
-      path += ` L ${x},${y}`;
-    }
-    
-    return path;
-  };
+  // Subtle scale animation during movement
+  const scale = useTransform(
+    smoothProgress,
+    [0.25, 0.32, 0.40, 0.60, 0.67, 0.75],
+    [1, 1.1, 1, 1, 1.1, 1]
+  );
 
   return (
-    <div className="scroll-progress-container">
-      {/* SVG для спирального ствола */}
-      <svg className="scroll-trunk-svg" viewBox="-5 0 10 100" preserveAspectRatio="none">
-        <motion.path
-          d={getTrunkPath()}
-          stroke="rgba(0, 0, 0, 0.1)"
-          strokeWidth="0.3"
-          fill="none"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          style={{ 
-            pathLength: scaleY,
-          }}
-        />
-      </svg>
+    <div className="custom-scroll-wrapper">
+      <div className="custom-scroll-track">
+        {/* Visual Background from SVG */}
+        <img src="/scroll.svg" alt="" className="custom-scroll-svg" />
 
-      {/* Спиральные ветки */}
-      {branches.map((branch, index) => (
+        {/* Moving Indicator */}
         <motion.div
-          key={index}
-          className={`scroll-branch-container scroll-branch-${branch.side}`}
+          className="custom-scroll-indicator"
           style={{
-            top: `${branch.position * 100}%`,
-            left: `calc(50% + ${branch.spiralOffset}px)`,
-          }}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: progress >= branch.position ? 1 : 0,
-          }}
-          transition={{
-            duration: 0.5,
-            ease: [0.4, 0, 0.2, 1],
-            delay: index * 0.04
+            top: topPosition,
+            left: "50%",
+            x: xPosition,
+            scale: scale
           }}
         >
-          <svg 
-            className="branch-svg"
-            viewBox={`0 -${branch.thickness * 2} ${branch.length} ${branch.thickness * 4}`}
-            style={{
-              width: `${branch.length}px`,
-              height: `${branch.thickness * 3}px`,
-              transform: branch.side === 'left' 
-                ? `scaleX(-1) rotate(${-branch.angle}deg)`
-                : `rotate(${branch.angle}deg)`,
-            }}
-          >
-            <motion.path
-              d={branch.curve}
-              stroke="rgba(0, 0, 0, 0.1)"
-              strokeWidth={branch.thickness}
-              fill="none"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{
-                pathLength: progress >= branch.position ? 1 : 0,
-              }}
-              transition={{
-                duration: 0.6,
-                ease: [0.4, 0, 0.2, 1]
-              }}
-            />
-          </svg>
-        </motion.div>
-      ))}
+          <div className="indicator-circle">
+            {/* SVG Ring with viewBox 0 0 100 100 for easy relative math */}
+            <svg className="progress-ring" viewBox="0 0 100 100">
+              {/* Background track */}
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="rgba(0,0,0,0.1)"
+                strokeWidth="6"
+                fill="none"
+              />
+              {/* Progress value */}
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="#333"
+                strokeWidth="6"
+                fill="none"
+                pathLength={smoothProgress}
+                style={{
+                  rotate: -90,
+                  transformOrigin: "center",
+                  strokeLinecap: "round"
+                }}
+              />
+            </svg>
 
-      {/* Процент в спиральном кружке */}
-      <motion.div
-        className="scroll-percentage-container"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ 
-          opacity: progress > 0.05 && progress < 0.98 ? 1 : 0,
-          scale: progress > 0.05 && progress < 0.98 ? 1 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* SVG спиральный круг */}
-        <svg className="percentage-spiral" viewBox="0 0 60 60">
-          <motion.circle
-            cx="30"
-            cy="30"
-            r="26"
-            fill="none"
-            stroke="rgba(0, 0, 0, 0.08)"
-            strokeWidth="1"
-            strokeDasharray="4 4"
-            initial={{ rotate: 0 }}
-            animate={{ rotate: 360 }}
-            transition={{ 
-              duration: 20, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-          />
-          <motion.path
-            d="M 30,4 Q 50,10 54,30 Q 50,50 30,56 Q 10,50 6,30 Q 10,10 30,4"
-            fill="none"
-            stroke="rgba(0, 0, 0, 0.1)"
-            strokeWidth="0.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 2, ease: "easeInOut" }}
-          />
-        </svg>
-        
-        <div className="scroll-percentage">
-          {Math.round(progress * 100)}
-        </div>
-      </motion.div>
+            <span className="indicator-text">
+              <ProgressNumber value={smoothProgress} />
+            </span>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };

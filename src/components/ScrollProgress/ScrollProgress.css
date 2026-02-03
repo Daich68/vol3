@@ -1,94 +1,91 @@
-.scroll-progress-container {
-  position: fixed;
-  right: 2rem;
-  top: 0;
-  height: 100vh;
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  pointer-events: none;
-}
-
-.scroll-trunk-svg {
+.custom-scroll-wrapper {
   position: absolute;
-  width: 20px;
-  height: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scroll-branch-container {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  transform: translateX(-50%);
-}
-
-.scroll-branch-container.scroll-branch-left {
-  justify-content: flex-end;
-}
-
-.scroll-branch-container.scroll-branch-right {
-  justify-content: flex-start;
-}
-
-.branch-svg {
-  display: block;
-  transform-origin: left center;
-}
-
-.scroll-percentage-container {
-  position: absolute;
-  bottom: 2rem;
   right: 0;
-  width: 60px;
-  height: 60px;
+  top: 0;
+  height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 20;
   pointer-events: none;
 }
 
-.percentage-spiral {
-  position: absolute;
-  width: 100%;
+.custom-scroll-track {
+  position: relative;
   height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  /* Important: allow SVG to stick out */
+}
+
+.custom-scroll-svg {
+  /* Scale up significantly to mimic reference */
+  height: 160%;
+  width: auto;
+  min-width: 100%;
+  object-fit: cover;
+  opacity: 1;
+
+  /* Center vertically so it pokes out top and bottom equally */
+  transform: translateY(0%) translateX(15%);
+  /* Also shift right slightly if needed, but mainly we want height */
+  /* If the SVG has whitespace, scaling it helps. */
+}
+
+.custom-scroll-indicator {
+  position: absolute;
+  /* top/left handled by Framer Motion inline styles */
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  z-index: 30;
+  will-change: transform, top;
+}
+
+.indicator-circle {
+  width: 3.5vw;
+  height: 3.5vw;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 60px;
+  max-height: 60px;
+
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.4vw 1vw rgba(0, 0, 0, 0.15);
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+}
+
+.progress-ring {
+  position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
 }
 
-.scroll-percentage {
-  position: relative;
-  font-family: 'DeltaBlock', 'Babayka', monospace;
-  font-size: 1.2rem;
-  color: rgba(0, 0, 0, 0.4);
-  font-weight: bold;
-  letter-spacing: 0.05em;
-  pointer-events: none;
-  line-height: 1;
-  z-index: 1;
+.indicator-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.9vw;
+  color: #333;
+  z-index: 2;
 }
 
-/* Адаптивность */
-@media (max-width: 700px) {
-  .scroll-progress-container {
-    right: 1rem;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-scroll-wrapper {
+    position: fixed;
     width: 50px;
-  }
-
-  .scroll-trunk-svg {
-    width: 8px;
-  }
-
-  .scroll-percentage-container {
-    width: 50px;
-    height: 50px;
-    bottom: 1.5rem;
-  }
-
-  .scroll-percentage {
-    font-size: 1rem;
+    right: 0;
   }
 }
