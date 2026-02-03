@@ -1,148 +1,149 @@
 .about {
+    width: 100%;
+    padding-bottom: 30vh;
+}
+
+.about-content {
     display: flex;
     flex-direction: column;
+    gap: 20vh;
+}
+
+.hero-section {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
-    max-width: 100vw;
-    min-height: 100vh;
-    padding: 0;
-    margin: 0;
-    background: white;
+    text-align: center;
     position: relative;
-    overflow-x: hidden;
 }
 
-/* Tree Section */
-.tree-section {
-    width: 100%;
-    padding: 2em 0 3em; /* Увеличено */
+.hero-title {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    text-transform: uppercase;
 }
 
-/* Features Section */
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    color: #666;
+    max-width: 500px;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
 .features-section {
-    max-width: 46.875em;
-    margin: 0 auto 2em; /* Увеличено */
-    padding: 0 1.5em; /* Увеличено */
+    padding: 0 5vw;
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5em; /* Увеличено */
+    gap: 3vw;
 }
 
 .feature-item {
-    text-align: center;
-    padding: 1.5em 0.8em; /* Увеличено */
-    background: white;
-    border: 0.052em solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    cursor: default;
+    background: #ffffff;
+    padding: 4vw 2vw;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
 }
 
-.feature-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.02), transparent);
-    transition: left 0.5s ease;
-}
-
-.feature-item:hover::before {
-    left: 100%;
-}
-
-.feature-item:hover {
-    border-color: rgba(0, 0, 0, 0.1);
-}
-
 .feature-number {
-    font-family: 'DeltaBlock', 'Babayka', monospace;
-    font-size: 3.5em; /* Увеличено */
-    font-weight: bold;
+    font-size: clamp(3rem, 5vw, 6rem);
+    font-weight: 900;
     color: #000;
-    margin-bottom: 0.3em; /* Увеличено */
     line-height: 1;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease;
 }
 
 .feature-label {
-    font-family: 'Entropia', serif;
-    font-size: 0.9em; /* Увеличено */
-    color: #666;
-    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-weight: 600;
+}
+
+.navigation-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6rem;
+    padding: 0 5vw;
 }
 
 .tree-divider {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1.5em; /* Увеличено */
-    margin: 2em 0 1.5em; /* Увеличено */
-    padding: 0 1.5em; /* Увеличено */
+    width: 100%;
+    gap: 3rem;
 }
 
 .divider-line {
+    height: 1px;
+    background: #e0e0e0;
     flex: 1;
-    height: 0.052em;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
-    max-width: 10.417em;
+    transform-origin: left;
+}
+
+.tree-divider .divider-line:last-child {
+    transform-origin: right;
 }
 
 .divider-text {
-    font-family: 'Entropia', serif;
-    font-size: 1.2em; /* Увеличено */
-    color: #999;
-    letter-spacing: 0.1em;
-    text-transform: lowercase;
+    font-size: 0.8rem;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 0.8em;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-/* Адаптивность */
-@media (max-width: 700px) {
+.tree-navigation-container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* Custom styles for TreeNavigation to make it look shared */
+.tree-navigation-container nav {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Scrollbar tweaks */
+.page-frame-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.page-frame-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.page-frame-content::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
     .features-grid {
         grid-template-columns: 1fr;
-        gap: 1.2em; /* Увеличено */
+        gap: 2rem;
     }
 
-    .feature-item {
-        padding: 1.2em 0.8em; /* Увеличено */
-    }
-
-    .feature-number {
-        font-size: 2.8em; /* Увеличено */
-    }
-
-    .feature-label {
-        font-size: 0.85em; /* Увеличено */
-    }
-
-    .divider-text {
-        font-size: 1em; /* Увеличено */
-    }
-
-    .tree-section {
-        padding: 1.2em 0 2em; /* Увеличено */
-    }
-
-    .features-section {
-        padding: 0 1.2em; /* Увеличено */
-        margin-bottom: 1.5em; /* Увеличено */
-    }
-
-    .tree-divider {
-        margin: 1.5em 0 1.2em; /* Увеличено */
-        padding: 0 1.2em; /* Увеличено */
-        gap: 1.2em; /* Увеличено */
-    }
-
-    .divider-line {
-        max-width: 8em; /* Увеличено */
+    .hero-section {
+        height: 60vh;
     }
 }

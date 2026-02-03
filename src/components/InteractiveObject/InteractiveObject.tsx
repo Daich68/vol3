@@ -1,4 +1,4 @@
-import React, { MouseEvent, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import './InteractiveObject.css';
 

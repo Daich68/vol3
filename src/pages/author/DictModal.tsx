@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Gifs } from "./Gifs";
-import {DictEntry} from "../../entity/Entity";
+import { DictEntry } from "../../entity/Entity";
 import "./WritePostModal.css"
 import { useKeyPress } from "../../hooks/useKeyPress";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
@@ -31,7 +31,7 @@ export const DictModal: React.FC<{
 
     const handleSave = async () => {
         if (isSaving) return;
-        
+
         setIsSaving(true);
         try {
             await onUpdateDict(localDict);
@@ -58,16 +58,16 @@ export const DictModal: React.FC<{
     if (!isOpen) return null;
 
     return (
-        <div 
-            className="modal" 
+        <div
+            className="modal"
             onClick={handleBackdropClick}
             role="dialog"
             aria-modal="true"
             aria-labelledby="dict-modal-title"
         >
             <div className="modal-content" ref={modalRef}>
-                <button 
-                    className="close" 
+                <button
+                    className="close"
                     onClick={handleClose}
                     aria-label="закрыть"
                     disabled={isSaving}
@@ -75,12 +75,12 @@ export const DictModal: React.FC<{
                     &times;
                 </button>
                 <h2 id="dict-modal-title">словарик-вольтри</h2>
-                <ul role="list">
+                <ul>
                     {Gifs.map((gif) => {
                         const entry = localDict.find((entry) => entry.gif_tag === gif.tag);
 
                         return (
-                            <li key={gif.tag} className="dict-item" role="listitem">
+                            <li key={gif.tag} className="dict-item">
                                 <img src={gif.src} alt={gif.alt} className="gif-thumbnail" />
                                 <div className={"separator"}></div>
                                 {editable ? (
@@ -116,7 +116,7 @@ export const DictModal: React.FC<{
                     })}
                 </ul>
                 {editable && (
-                    <button 
+                    <button
                         onClick={handleSave}
                         disabled={isSaving}
                         aria-busy={isSaving}

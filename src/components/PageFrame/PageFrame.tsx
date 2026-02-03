@@ -1,7 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './PageFrame.css';
 import { ScrollProgress } from '../ScrollProgress/ScrollProgress';
 import { InteractiveObject } from '../InteractiveObject/InteractiveObject';
+import { useLenis } from '../../hooks/useLenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface PageFrameProps {
     children: React.ReactNode;
@@ -10,6 +15,21 @@ interface PageFrameProps {
 
 export const PageFrame: React.FC<PageFrameProps> = ({ children, showScroll = true }) => {
     const contentRef = useRef<HTMLDivElement>(null);
+
+    // Initialize Lenis for the scrollable content area
+    useLenis(contentRef);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            // Tell ScrollTrigger to use our custom scroll container
+            ScrollTrigger.defaults({
+                scroller: contentRef.current
+            });
+
+            // Re-refresh ScrollTrigger when content changes
+            ScrollTrigger.refresh();
+        }
+    }, [children]);
 
     return (
         <div className="page-frame-container">
