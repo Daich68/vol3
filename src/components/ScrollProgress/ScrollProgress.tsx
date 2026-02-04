@@ -58,28 +58,57 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({
   );
 
   // Horizontal movement in relative units (%) relative to the wrapper width
+  // Created a more "winding" wavy path to match the organic tree branch
   const xPosition = useTransform(
     smoothProgress,
     mode === 'snapping'
-      ? [0, 0.25, 0.40, 0.60, 0.75, 1]
-      : [0, 0.5, 1],
+      ? [0, 0.20, 0.40, 0.50, 0.70, 1]
+      : [0, 0.3, 0.6, 1],
     mode === 'snapping'
-      ? ['0%', '0%', '25%', '25%', '-10%', '-10%']
-      : ['0%', '15%', '-5%']
+      ? ['-10%', '5%', '25%', '10%', '-15%', '0%']
+      : ['0%', '15%', '-10%', '0%']
+  );
+
+  // Rotate the indicator slightly based on horizontal movement
+  const rotation = useTransform(
+    smoothProgress,
+    [0, 0.2, 0.4, 0.6, 0.8, 1],
+    [0, 5, -8, 10, -5, 0]
   );
 
   // Subtle scale animation during movement
   const scale = useTransform(
     smoothProgress,
-    [0.25, 0.32, 0.40, 0.60, 0.67, 0.75],
-    [1, 1.1, 1, 1, 1.1, 1]
+    [0.15, 0.35, 0.45, 0.65, 0.85],
+    [1, 1.08, 0.95, 1.1, 1]
   );
 
   return (
     <div className="custom-scroll-wrapper">
       <div className="custom-scroll-track">
         {/* Visual Background from SVG */}
-        <img src="/scroll.svg" alt="" className="custom-scroll-svg" />
+        {/* Visual Background - Layered for animation */}
+        <div className="custom-scroll-tree-container">
+          {/* Grey Base Track */}
+          <img src="/scroll.svg" alt="" className="custom-scroll-svg track" />
+
+          {/* Animated White Fill - Flowing like a liquid */}
+          <motion.img
+            src="/scroll.svg"
+            alt=""
+            className="custom-scroll-svg fill"
+            style={{
+              WebkitMaskImage: useTransform(
+                smoothProgress,
+                (p) => `linear-gradient(to bottom, rgba(0,0,0,1) ${p * 100 - 5}%, rgba(0,0,0,0.3) ${p * 100}%, rgba(0,0,0,0) ${p * 100 + 2}%)`
+              ),
+              maskImage: useTransform(
+                smoothProgress,
+                (p) => `linear-gradient(to bottom, rgba(0,0,0,1) ${p * 100 - 5}%, rgba(0,0,0,0.3) ${p * 100}%, rgba(0,0,0,0) ${p * 100 + 2}%)`
+              )
+            }}
+          />
+        </div>
 
         {/* Moving Indicator */}
         <motion.div
@@ -88,7 +117,8 @@ export const ScrollProgress: React.FC<ScrollProgressProps> = ({
             top: topPosition,
             left: "50%",
             x: xPosition,
-            scale: scale
+            scale: scale,
+            rotate: rotation
           }}
         >
           <div className="indicator-circle">

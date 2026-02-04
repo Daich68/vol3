@@ -1,207 +1,195 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
+import { PageFrame } from "../../components/PageFrame/PageFrame";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./Philosophy.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Philosophy: React.FC = () => {
   const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        // 1. Hero Animations
+        gsap.from(".hero-title-phi", {
+          y: 100,
+          opacity: 0,
+          duration: 2,
+          ease: "expo.out",
+          delay: 0.5
+        });
+
+        gsap.from(".hero-subtitle-phi", {
+          y: 50,
+          opacity: 0,
+          duration: 1.5,
+          ease: "power3.out",
+          delay: 1
+        });
+
+        // 2. Sections Staggered Reveal
+        const sections = gsap.utils.toArray(".philosophy-section-snap") as HTMLElement[];
+        sections.forEach((section, i) => {
+          if (i === 0) return; // Skip hero
+
+          gsap.from(section.querySelectorAll(".anim-up"), {
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 1,
+            ease: "power3.out"
+          });
+        });
+
+        // 3. Principles Animation
+        gsap.from(".principle-card", {
+          scrollTrigger: {
+            trigger: ".principles-grid",
+            start: "top 70%",
+          },
+          y: 80,
+          opacity: 0,
+          scale: 0.95,
+          stagger: 0.2,
+          duration: 1.2,
+          ease: "back.out(1.4)"
+        });
+
+        // 4. Snap Scrolling
+        ScrollTrigger.create({
+          trigger: ".philosophy-content-snap",
+          start: "top top",
+          end: "bottom bottom",
+          snap: {
+            snapTo: [0, 0.25, 0.5, 0.75, 1],
+            duration: { min: 0.4, max: 0.6 },
+            delay: 0.1,
+            ease: "power1.inOut"
+          }
+        });
+
+        // 5. Scroll Path Fill Animation
+        gsap.to(".scroll-path-fill", {
+          scrollTrigger: {
+            trigger: ".philosophy-content-snap",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1, // Smooth following
+          },
+          scaleY: 1,
+          backgroundColor: "#ffffff",
+          boxShadow: "0 0 15px rgba(255, 255, 255, 0.8)",
+          ease: "none"
+        });
+
+        ScrollTrigger.refresh();
+      }, containerRef);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="philosophy">
-      <ScrollProgress />
-      <motion.button
-        className="back-button"
-        onClick={() => navigate("/")}
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        ← назад
-      </motion.button>
-
-      <motion.div
-        className="philosophy-content"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <motion.h1
-          className="philosophy-title"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          философия вольтри
-        </motion.h1>
-
-        <motion.section
-          className="philosophy-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <h2 className="section-title">что такое вольтри?</h2>
-          <div className="section-content">
-            <p>
-              вольтри — это не просто социальная сеть. это пространство для осознанного общения,
-              где каждое слово имеет вес, а каждая мысль — ценность.
-            </p>
-            <p>
-              мы создали место, где нет спешки, нет бесконечной ленты, нет давления
-              постоянного присутствия. здесь есть только вы, ваши мысли и ваш язык.
-            </p>
+    <PageFrame>
+      <div className="philosophy" ref={containerRef}>
+        <div className="philosophy-content-snap">
+          {/* The "Electric Tree" Trunk Path */}
+          <div className="scroll-path-track">
+            <div className="scroll-path-fill" />
           </div>
-        </motion.section>
 
-        <motion.section
-          className="philosophy-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <h2 className="section-title">электрическое дерево</h2>
-          <div className="section-content">
-            <p>
-              вольтри иногда называют «электрическим деревом» — метафора, которая отражает
-              суть проекта. как дерево растет медленно, укореняясь в земле, так и ваши
-              мысли здесь требуют времени и внимания.
-            </p>
-            <p>
-              электричество — это энергия, связь, импульс. каждый пост — это разряд,
-              который остается в пространстве навсегда, формируя вашу историю и ваш язык.
-            </p>
-          </div>
-        </motion.section>
+          {/* STAGE 1: Hero */}
+          <section className="philosophy-section-snap hero-phi">
+            <h1 className="hero-title-phi">философия вольтри</h1>
+            <p className="hero-subtitle-phi">Пространство осознанного общения и личного языка</p>
+          </section>
 
-        <motion.section
-          className="philosophy-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <h2 className="section-title">три принципа</h2>
-          <div className="principles-detailed">
-            <div className="principle-detailed">
-              <div className="principle-icon-large">◉</div>
-              <h3>осознанность</h3>
-              <p>
-                каждое слово имеет значение. здесь нет места случайным мыслям или
-                импульсивным реакциям. вы пишете, когда есть что сказать, и каждое
-                ваше сообщение — это осознанный выбор.
-              </p>
-              <p>
-                мы верим, что качество важнее количества. один пост в день — это
-                возможность сконцентрироваться на том, что действительно важно.
-              </p>
+          {/* STAGE 2: Concept */}
+          <section className="philosophy-section-snap concept-phi">
+            <div className="content-inner">
+              <h2 className="anim-up">электрическое дерево</h2>
+              <div className="anim-up desc-text">
+                <p>
+                  вольтри — это не просто сеть. Это пространство, где каждое слово имеет вес.
+                  Мы называем его «электрическим деревом»: как дерево растет медленно,
+                  так и ваши мысли здесь требуют времени и внимания.
+                </p>
+                <p>
+                  Каждый импульс — это разряд, который остается в пространстве навсегда,
+                  формируя вашу историю и ваш собственный язык.
+                </p>
+              </div>
             </div>
+          </section>
 
-            <div className="principle-detailed">
-              <div className="principle-icon-large">◎</div>
-              <h3>размеренность</h3>
-              <p>
-                в мире, где все требует немедленной реакции, вольтри предлагает
-                замедлиться. один пост в день — это не ограничение, а освобождение
-                от необходимости постоянно быть онлайн.
-              </p>
-              <p>
-                это время для размышлений, для того чтобы прожить день и выбрать
-                одну мысль, которой стоит поделиться. это ритм, который позволяет
-                дышать.
-              </p>
+          {/* STAGE 3: Principles */}
+          <section className="philosophy-section-snap principles-phi">
+            <div className="principles-grid">
+              <div className="principle-card">
+                <div className="p-number">01</div>
+                <div className="p-title">Осознанность</div>
+                <div className="p-desc">Каждое слово — это ваш выбор. Качество важнее количества.</div>
+              </div>
+              <div className="principle-card">
+                <div className="p-number">02</div>
+                <div className="p-title">Размеренность</div>
+                <div className="p-desc">Один пост в день — это ритм, который позволяет дышать.</div>
+              </div>
+              <div className="principle-card">
+                <div className="p-number">03</div>
+                <div className="p-title">Самопознание</div>
+                <div className="p-desc">Ваш словарик — это зеркало вашего внутреннего мира.</div>
+              </div>
             </div>
+          </section>
 
-            <div className="principle-detailed">
-              <div className="principle-icon-large">◈</div>
-              <h3>всматривание в себя</h3>
-              <p>
-                вольтри — это зеркало. здесь вы создаете свой собственный язык,
-                свой словарик, который отражает ваше мышление и ваш внутренний мир.
-              </p>
-              <p>
-                каждый пользователь — это автор собственного языка. со временем
-                ваш словарик становится картой вашего сознания, историей ваших
-                мыслей и эволюции.
-              </p>
+          {/* STAGE 4: Freedom through Constraints */}
+          <section className="philosophy-section-snap constraints-phi">
+            <div className="content-inner">
+              <h2 className="anim-up">ограничения как свобода</h2>
+              <div className="phi-list anim-up">
+                <div className="phi-list-item">
+                  <span>один пост в день</span>
+                  <p>учит выбирать главное</p>
+                </div>
+                <div className="phi-list-item">
+                  <span>без редактирования</span>
+                  <p>учит ответственности</p>
+                </div>
+                <div className="phi-list-item">
+                  <span>без удаления</span>
+                  <p>создает честную историю</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </motion.section>
+          </section>
 
-        <motion.section
-          className="philosophy-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <h2 className="section-title">ограничения как свобода</h2>
-          <div className="section-content">
-            <p>
-              вольтри намеренно ограничивает вас. но эти ограничения — не тюрьма,
-              а рамка, которая помогает сфокусироваться:
-            </p>
-            <ul className="philosophy-list">
-              <li>
-                <strong>один пост в день</strong> — учит выбирать главное и ценить
-                момент
-              </li>
-              <li>
-                <strong>лимит символов</strong> — заставляет быть точным и ясным
-              </li>
-              <li>
-                <strong>невозможность редактирования</strong> — учит ответственности
-                за свои слова
-              </li>
-              <li>
-                <strong>невозможность удаления</strong> — создает честную историю
-                вашего пути
-              </li>
-            </ul>
-            <p>
-              эти ограничения не мешают — они освобождают. они снимают давление
-              перфекционизма и бесконечной оптимизации. то, что написано — написано.
-              это ваша правда в этот момент времени.
-            </p>
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="philosophy-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-        >
-          <h2 className="section-title">ваш личный язык</h2>
-          <div className="section-content">
-            <p>
-              на вашей странице есть словарик — место, где вы определяете значения
-              слов так, как вы их понимаете. это не просто список терминов, это
-              ваша философия, ваш способ видеть мир.
-            </p>
-            <p>
-              со временем ваш словарик становится ключом к пониманию ваших постов,
-              вашего мышления, вашей эволюции. другие пользователи могут читать
-              ваш словарик и понимать, на каком языке вы говорите.
-            </p>
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="philosophy-section philosophy-footer"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-        >
-          <div className="section-content centered">
-            <p className="footer-quote">
-              используйте вольтри-язык, и просто оставайтесь здесь столько,
-              сколько пожелаете
-            </p>
-            <p className="footer-subtext">
-              это не гонка. это путь.
-            </p>
-          </div>
-        </motion.section>
-      </motion.div>
-    </div>
+          {/* STAGE 5: Conclusion */}
+          <section className="philosophy-section-snap footer-phi">
+            <div className="footer-phi-content anim-up">
+              <div className="tree-divider-phi">
+                <div className="divider-line-phi" />
+                <div className="divider-text-phi">путь</div>
+                <div className="divider-line-phi" />
+              </div>
+              <p className="final-quote">
+                используйте вольтри-язык, и просто оставайтесь здесь столько,
+                сколько пожелаете
+              </p>
+              <p className="final-sub">это не гонка. это путь.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </PageFrame>
   );
 };

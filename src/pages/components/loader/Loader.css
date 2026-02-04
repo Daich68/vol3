@@ -1,13 +1,15 @@
-.loader{
+.loader {
     height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    .container{
+
+    .container {
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
+
         img {
             width: auto;
             height: 20em;
