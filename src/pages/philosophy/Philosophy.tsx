@@ -109,7 +109,7 @@ export const Philosophy: React.FC = () => {
 
           {/* STAGE 1: Hero */}
           <section className="philosophy-section-snap hero-phi">
-            <h1 className="hero-title-phi">философия вольтри</h1>
+            <h1 className="hero-title-phi">Vol-3 philosophy</h1>
             <p className="hero-subtitle-phi">Пространство осознанного общения и личного языка</p>
           </section>
 
