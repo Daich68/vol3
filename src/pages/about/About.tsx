@@ -34,6 +34,28 @@ export const About: React.FC = () => {
           delay: 1
         });
 
+        // 1.1 Logo Filling Animation
+        const logoTL = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.5,
+          }
+        });
+
+        logoTL.to(".logo-fill-layer", {
+          clipPath: "inset(0% 0% 0% 0%)", // Fully revealed
+          ease: "none"
+        })
+          .to(".hero-logo-container", {
+            scale: 0.95,
+            opacity: 0.1,
+            y: -30,
+            filter: "blur(10px)",
+            ease: "none"
+          }, 0.5);
+
         // 2. Features Animation
         const features = gsap.utils.toArray(".feature-item") as HTMLElement[];
         gsap.from(features, {
@@ -122,16 +144,18 @@ export const About: React.FC = () => {
         <div className="about-content">
           {/* STAGE 1: Hero */}
           <section className="hero-section" ref={heroRef}>
-            <video
-              key="hero-video-fixed"
-              className="hero-video-bg"
-              autoPlay
-              loop
-              muted
-              playsInline
-            >
-              <source src="/hf_20260203_202657_a0e47eb0-33e1-4d00-9e4e-66efd79225d6.mp4" type="video/mp4" />
-            </video>
+            <div className="hero-logo-container">
+              <img
+                src="/logo [Vectorized].svg"
+                alt="Voltri Logo Base"
+                className="hero-logo-base"
+              />
+              <img
+                src="/logo [Vectorized].svg"
+                alt="Voltri Logo Fill"
+                className="hero-logo-fill logo-fill-layer"
+              />
+            </div>
             <h1 className="hero-title">web-almanac</h1>
             <p className="hero-subtitle">Проект свободного распространения е-литературы</p>
           </section>
