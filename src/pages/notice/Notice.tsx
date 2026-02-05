@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GetNotices } from "../../requests/Api";
 import { Notice } from "../../entity/Entity";
-import { Loader } from "../components/loader/Loader";
+import { Loader } from "../../components/Loader/Loader";
 import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";

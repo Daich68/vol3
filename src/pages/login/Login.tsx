@@ -1,11 +1,12 @@
-import React, { useState, FormEvent } from "react";
-import {loginRequest, regRequest} from "../../api/Login";
+import React, { useState, FormEvent, useEffect, useRef } from "react";
+import { loginRequest, regRequest } from "../../api/Login";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { Token } from "../../entity/Entity";
-import {GetAuthors} from "../../requests/Api";
+import { GetAuthors } from "../../requests/Api";
 import { safeLocalStorage } from "../../utils/localStorage";
-import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
+import { PageFrame } from "../../components/PageFrame/PageFrame";
+import gsap from "gsap";
 
 export const Login: React.FC = () => {
     const [login, setLogin] = useState("");
@@ -16,26 +17,45 @@ export const Login: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
+
     const navigate = useNavigate();
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.from(".login-hero-title", {
+                y: 40,
+                opacity: 0,
+                duration: 1.2,
+                ease: "expo.out"
+            });
+
+            gsap.from(".login-card", {
+                y: 30,
+                opacity: 0,
+                duration: 1,
+                delay: 0.3,
+                ease: "power2.out"
+            });
+        }, containerRef);
+        return () => ctx.revert();
+    }, []);
 
     const handleLogin = async (event: FormEvent) => {
         event.preventDefault();
-        
         if (isLoading) return;
-        
         setMsg("");
         setIsLoading(true);
-        
         try {
             const token: Token = await loginRequest({ login, password });
             safeLocalStorage.clear();
             safeLocalStorage.setItem("accessToken", token.access);
             safeLocalStorage.setItem("ID", token._id);
-            navigate(`/person?id=${token._id}`);
+            navigate(`/author/${token._id}`);
             return;
         } catch (error) {
             console.error("Login failed:", error);
-            setMsg("не удалось зайти (если возникли проблемы, пишите на почту info@web-almanac.com)");
+            setMsg("не удалось зайти. проверьте данные или напишите на info@web-almanac.com");
         } finally {
             setIsLoading(false);
         }
@@ -65,27 +85,17 @@ export const Login: React.FC = () => {
         setLogin(value);
         setLoginError("");
         setMsg("");
-        
-        if (isRegister && value.length >= 5 && !validateLogin(value)) {
-            setLoginError("логин должен состоять не менее чем из 5 символов и включать буквы");
-        }
     };
 
     const handlePasswordChange = (value: string) => {
         setPassword(value);
         setPasswordError("");
         setMsg("");
-        
-        if (isRegister && value.length >= 8 && !validatePassword(value)) {
-            setPasswordError("пароль должен состоять не менее чем из 8 символов и включать как буквы (латинского алфавита), так и цифры");
-        }
     };
 
     const handleRegister = async (event: FormEvent) => {
         event.preventDefault();
-
         if (isLoading) return;
-
         setMsg("");
         setLoginError("");
         setPasswordError("");
@@ -96,35 +106,28 @@ export const Login: React.FC = () => {
         }
 
         if (!validatePassword(password)) {
-            setPasswordError(
-                "пароль должен состоять не менее чем из 8 символов и включать как буквы (латинского алфавита), так и цифры. специальные символы не разрешены."
-            );
+            setPasswordError("минимум 8 символов: латиница и цифры");
             return;
         }
-        
+
         if (!validateLogin(login)) {
-            setLoginError(
-                "логин должен состоять не менее чем из 5 символов и включать буквы"
-            )
+            setLoginError("минимум 5 символов и буквы")
             return;
         }
-        
+
         setIsLoading(true);
-        
         try {
             let exist = await isLoginExist(login)
             if (exist) {
-                setLoginError(
-                    "попробуйте придумать другой логин, такой уже существует"
-                )
+                setLoginError("такой логин уже существует")
+                setIsLoading(false);
                 return;
             }
-            
             let token = await regRequest({ login, password });
             safeLocalStorage.clear();
             safeLocalStorage.setItem("accessToken", token.access);
             safeLocalStorage.setItem("ID", token._id);
-            navigate("/person");
+            navigate(`/author/${token._id}`);
             return;
         } catch (error) {
             console.error("Registration failed:", error);
@@ -135,107 +138,105 @@ export const Login: React.FC = () => {
     };
 
     const toggleMode = () => {
-        setIsRegister(!isRegister);
-        setMsg("");
-        setLoginError("");
-        setPasswordError("");
-        setConfirmPassword("");
+        gsap.to(".login-card-inner", {
+            opacity: 0,
+            x: isRegister ? 20 : -20,
+            duration: 0.3,
+            onComplete: () => {
+                setIsRegister(!isRegister);
+                setMsg("");
+                setLoginError("");
+                setPasswordError("");
+                setConfirmPassword("");
+                gsap.fromTo(".login-card-inner",
+                    { opacity: 0, x: isRegister ? -20 : 20 },
+                    { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+                );
+            }
+        });
     };
 
     return (
-        <div className={"login"}>
-        <ScrollProgress />
-        <div className="auth-container">
-            <div className="auth-form" role="main" aria-labelledby="auth-title">
-                <h2 id="auth-title">{isRegister ? "регистрация" : "вход"}</h2>
-                <form onSubmit={isRegister ? handleRegister : handleLogin} noValidate>
-                    <label htmlFor="login-input">
-                        {isRegister ? "ник (так вы будете отображаться на площадке):" : "ник:"}
-                    </label>
-                    <input
-                        id="login-input"
-                        className={"auth-input"}
-                        type="text"
-                        value={login}
-                        onChange={(e) => handleLoginChange(e.target.value)}
-                        required
-                        aria-required="true"
-                        aria-invalid={!!loginError}
-                        aria-describedby={loginError ? "login-error" : undefined}
-                        disabled={isLoading}
-                        autoComplete="username"
-                    />
-                    {loginError && (
-                        <p id="login-error" className="error-message" role="alert">
-                            {loginError}
-                        </p>
-                    )}
-                    
-                    <label htmlFor="password-input">
-                        пароль:
-                    </label>
-                    <input
-                        id="password-input"
-                        className={"auth-input"}
-                        type="password"
-                        value={password}
-                        onChange={(e) => handlePasswordChange(e.target.value)}
-                        required
-                        aria-required="true"
-                        aria-invalid={!!passwordError}
-                        aria-describedby={passwordError ? "password-error" : undefined}
-                        disabled={isLoading}
-                        autoComplete={isRegister ? "new-password" : "current-password"}
-                    />
-                    {passwordError && (
-                        <p id="password-error" className="error-message" role="alert">
-                            {passwordError}
-                        </p>
-                    )}
-                    
-                    {isRegister && (
-                        <>
-                            <label htmlFor="confirm-password-input">
-                                пароль еще раз:
-                            </label>
-                            <input
-                                id="confirm-password-input"
-                                className={"auth-input"}
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => {
-                                    setConfirmPassword(e.target.value);
-                                    setMsg("");
-                                }}
-                                required
-                                aria-required="true"
-                                disabled={isLoading}
-                                autoComplete="new-password"
-                            />
-                        </>
-                    )}
-                    <button 
-                        type="submit" 
-                        disabled={isLoading}
-                        aria-busy={isLoading}
-                    >
-                        {isLoading ? "загрузка..." : (isRegister ? "регистрация" : "вход")}
-                    </button>
-                </form>
-                {msg && <p className="auth-message" role="alert">{msg}</p>}
-                <p className="switch-link">
-                    {isRegister ? "уже есть аккаунт?" : "еще нет аккаунта?"}{" "}
-                    <button 
-                        className={"here"} 
-                        onClick={toggleMode}
-                        type="button"
-                        disabled={isLoading}
-                    >
-                        {isRegister ?  "войти здесь" : "зарегестрироваться здесь"}
-                    </button>
-                </p>
+        <PageFrame showScroll={false}>
+            <div className="login" ref={containerRef}>
+                <div className="login-hero">
+                    <h1 className="login-hero-title">
+                        {isRegister ? "creation" : "entrance"}
+                    </h1>
+                </div>
+
+                <div className="login-container">
+                    <div className="login-card">
+                        <div className="login-card-border" />
+                        <div className="login-card-inner">
+                            <form className="login-form-premium" onSubmit={isRegister ? handleRegister : handleLogin}>
+                                <div className="login-input-group">
+                                    <label className="login-label">идентификатор</label>
+                                    <input
+                                        className="login-input-premium"
+                                        type="text"
+                                        value={login}
+                                        onChange={(e) => handleLoginChange(e.target.value)}
+                                        placeholder="..."
+                                        required
+                                    />
+                                    {loginError && <span className="login-error-hint">{loginError}</span>}
+                                </div>
+
+                                <div className="login-input-group">
+                                    <label className="login-label">ключ доступа</label>
+                                    <input
+                                        className="login-input-premium"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => handlePasswordChange(e.target.value)}
+                                        placeholder="..."
+                                        required
+                                    />
+                                    {passwordError && <span className="login-error-hint">{passwordError}</span>}
+                                </div>
+
+                                {isRegister && (
+                                    <div className="login-input-group">
+                                        <label className="login-label">повтор ключа</label>
+                                        <input
+                                            className="login-input-premium"
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            placeholder="..."
+                                            required
+                                        />
+                                    </div>
+                                )}
+
+                                {msg && <div className="login-global-msg">{msg}</div>}
+
+                                <button
+                                    className="login-submit-btn"
+                                    type="submit"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? "синхронизация..." : (isRegister ? "создать аккаунт" : "войти в систему")}
+                                </button>
+                            </form>
+
+                            <div className="login-switch">
+                                <span className="switch-text">
+                                    {isRegister ? "уже часть вольтри?" : "создать новую запись?"}
+                                </span>
+                                <button className="switch-btn" onClick={toggleMode} type="button">
+                                    {isRegister ? "войти" : "зарегистрироваться"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="login-footer-meta">
+                    vol_sys_auth_v3.01 // secure_access_only
+                </div>
             </div>
-        </div>
-        </div>
+        </PageFrame>
     );
 };

@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Author, Post } from "../../entity/Entity";
 import "./Search.css";
 import { GetAuthors, GetPosts } from "../../requests/Api";
 import { Link } from "react-router-dom";
-import { Loader } from "../components/loader/Loader";
+import { Loader } from "../../components/Loader/Loader";
 import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
 import { useDebounce } from "../../hooks/useDebounce";
-import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
+import { PageFrame } from "../../components/PageFrame/PageFrame";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Search: React.FC = () => {
     const [authors, setAuthors] = useState<Author[]>();
@@ -15,20 +19,21 @@ export const Search: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string>("");
-    
-    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const debouncedSearchQuery = useDebounce(searchQuery, 100);
 
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
             setError("");
-            
+
             try {
                 const [authorsData, postsData] = await Promise.all([
                     GetAuthors(),
                     GetPosts()
                 ]);
-                
+
                 setAuthors(authorsData);
                 setFilteredAuthors(authorsData);
                 setPosts(postsData);
@@ -47,7 +52,7 @@ export const Search: React.FC = () => {
         if (!authors) return;
 
         const query = debouncedSearchQuery.toLowerCase().trim();
-        
+
         if (!query) {
             setFilteredAuthors(authors);
             return;
@@ -58,6 +63,67 @@ export const Search: React.FC = () => {
         );
         setFilteredAuthors(filtered);
     }, [debouncedSearchQuery, authors]);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        // Use a small delay to ensure DOM is ready for GSAP to find elements
+        const timer = setTimeout(() => {
+            const ctx = gsap.context(() => {
+                // Intro Animations
+                gsap.from(".search-hero-title", {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: "expo.out"
+                });
+
+                gsap.from(".search-input-container", {
+                    y: 40,
+                    opacity: 0,
+                    duration: 1,
+                    delay: 0.2,
+                    ease: "power3.out"
+                });
+
+                // Snap logic for the two sections
+                ScrollTrigger.create({
+                    trigger: ".search",
+                    start: "top top",
+                    end: "bottom bottom",
+                    snap: {
+                        snapTo: [0, 1],
+                        duration: { min: 0.3, max: 0.5 },
+                        delay: 0,
+                        ease: "power1.inOut"
+                    }
+                });
+
+                // Staggered reveal for author cards - only if not already visible/animating
+                // We use autoAlpha to handle both opacity and visibility
+                if (filteredAuthors.length > 0) {
+                    gsap.from(".author-card", {
+                        scrollTrigger: {
+                            trigger: ".search-results",
+                            start: "top 95%",
+                        },
+                        y: 30,
+                        autoAlpha: 0, // Sets visibility: hidden and opacity: 0
+                        stagger: 0.04,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        clearProps: "all"
+                    });
+                }
+
+                ScrollTrigger.refresh();
+            }, containerRef);
+
+            return () => ctx.revert();
+        }, 150);
+
+        return () => clearTimeout(timer);
+    }, [isLoading, filteredAuthors.length > 0]); // Only re-run when going from 0 to some authors
 
     const getMostRecentPost = (authorId: string) => {
         const authorPosts = posts.filter((post) => post.author_id === authorId);
@@ -80,64 +146,76 @@ export const Search: React.FC = () => {
     });
 
     if (isLoading) {
-        return <Loader />;
-    }
-
-    if (error) {
-        return (
-            <div className="search">
-                <div className="error-state" role="alert">
-                    <p>{error}</p>
-                </div>
-            </div>
-        );
+        return <PageFrame><Loader /></PageFrame>;
     }
 
     return (
-        <div className="search">
-            <ScrollProgress />
-            <div className={"input-container"}>
-                <label htmlFor="search-input" className="visually-hidden">
-                    поиск авторов
-                </label>
-                <input
-                    id="search-input"
-                    type="search"
-                    className="search-input"
-                    placeholder="если хочешь, найди кого-нибудь"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    aria-label="поиск авторов"
-                    autoComplete="off"
-                />
-            </div>
-            
-            {sortedAuthors.length === 0 ? (
-                <div className="empty-state">
-                    <p>
-                        {searchQuery 
-                            ? `ничего не найдено по запросу "${searchQuery}"` 
-                            : "пока нет авторов"}
-                    </p>
-                </div>
-            ) : (
-                <div role="list" aria-label="список авторов">
-                    {sortedAuthors.map((author: Author) => {
-                        const mostRecentPost = getMostRecentPost(author._id);
-                        let prettyTime = ""
-                        if (mostRecentPost){
-                            prettyTime = GetPrettyTimePub({ date: new Date(mostRecentPost.time_publication) })
-                        }
+        <PageFrame>
+            <div className="search" ref={containerRef}>
+                <div className="search-content">
+                    {/* STAGE 1: Hero & Input */}
+                    <section className="search-section search-hero">
+                        <h1 className="search-hero-title">search</h1>
+                        <div className="search-input-container">
+                            <input
+                                id="search-input"
+                                type="text"
+                                className="search-input-premium"
+                                placeholder="..."
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                autoComplete="off"
+                                autoFocus
+                            />
+                            <div className="search-input-line" />
+                            <label htmlFor="search-input" className="search-label">
+                                {searchQuery ? "ищем по ключу" : "всплыви из глубины воспоминаний"}
+                            </label>
+                        </div>
+                    </section>
 
-                        return (
-                            <div className="author" key={author._id} role="listitem">
-                                <Link to={`/author/${author._id}`}>{author.login}</Link>
-                                {prettyTime && <div className="time-publication"> {`последний пост ${prettyTime}`} </div>}
-                            </div>
-                        );
-                    })}
+                    {/* STAGE 2: Results */}
+                    <section className="search-section search-results">
+                        <div className="results-wrapper">
+                            {error ? (
+                                <div className="error-state" role="alert">{error}</div>
+                            ) : sortedAuthors.length === 0 ? (
+                                <div className="empty-state">
+                                    <p>ничего не найдено</p>
+                                </div>
+                            ) : (
+                                <div className="author-grid">
+                                    {sortedAuthors.map((author: Author) => {
+                                        const mostRecentPost = getMostRecentPost(author._id);
+                                        let prettyTime = ""
+                                        if (mostRecentPost) {
+                                            prettyTime = GetPrettyTimePub({ date: new Date(mostRecentPost.time_publication) })
+                                        }
+
+                                        return (
+                                            <Link
+                                                to={`/author/${author._id}`}
+                                                className="author-card"
+                                                key={author._id}
+                                            >
+                                                <div className="author-card-content">
+                                                    <span className="author-name">{author.login}</span>
+                                                    {prettyTime && (
+                                                        <span className="author-date">
+                                                            {prettyTime}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="author-card-hover" />
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </section>
                 </div>
-            )}
-        </div>
+            </div>
+        </PageFrame>
     );
 };

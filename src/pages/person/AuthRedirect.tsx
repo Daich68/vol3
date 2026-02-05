@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { safeLocalStorage } from "../../utils/localStorage";
-import { Loader } from "../components/loader/Loader";
+import { Loader } from "../../components/Loader/Loader";
 
 export const AuthRedirect = ({ id }: { id: string | null }) => {
     const [userId, setUserId] = useState<string | null>(null);
@@ -10,11 +10,11 @@ export const AuthRedirect = ({ id }: { id: string | null }) => {
     useEffect(() => {
         const checkAuth = () => {
             let finalId = id;
-            
+
             if (!finalId) {
                 finalId = safeLocalStorage.getItem("ID");
             }
-            
+
             setUserId(finalId);
             setIsChecking(false);
         };
@@ -29,6 +29,6 @@ export const AuthRedirect = ({ id }: { id: string | null }) => {
     if (!userId) {
         return <Navigate to="/login" replace />;
     }
-    
+
     return <Navigate to={`/author/${userId}`} replace />;
 };
