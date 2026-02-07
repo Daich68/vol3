@@ -233,9 +233,6 @@ export const Login: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="login-footer-meta">
-                    vol_sys_auth_v3.01 // secure_access_only
-                </div>
             </div>
         </PageFrame>
     );

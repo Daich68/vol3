@@ -168,8 +168,68 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .custom-scroll-wrapper {
-    position: fixed;
-    width: 50px;
+    position: absolute;
+    width: 60px;
     right: 0;
+    top: 0;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none !important;
+    /* CRITICAL: Pass clicks through */
+  }
+
+  /* Make sure children that need interaction have pointer-events: auto */
+  .custom-scroll-indicator,
+  .telegram-scroll-link {
+    pointer-events: auto !important;
+  }
+
+  .custom-scroll-track,
+  .custom-scroll-tree-container {
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Adjust SVG position for mobile */
+  .custom-scroll-svg {
+    transform: none;
+    left: 0;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    /* Slightly less opaque to not distract */
+  }
+
+  .indicator-circle {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .indicator-text {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+
+  /* Hide the little ring inside if it's too messy, or keep it */
+  .progress-ring {
+    opacity: 0.8;
+  }
+
+  .telegram-scroll-link {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    left: 50%;
+    transform: translateX(-50%) !important;
+    bottom: 20px;
   }
 }

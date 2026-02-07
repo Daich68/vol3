@@ -286,20 +286,46 @@
 /* Mobile */
 @media (max-width: 768px) {
     .author-hero {
-        height: 70vh;
+        height: auto;
+        min-height: 85dvh;
+        padding: 4rem 1rem;
     }
 
     .author-name-hero {
-        font-size: 4.5rem;
+        font-size: 3.5rem;
     }
 
     .author-nav-premium {
         flex-wrap: wrap;
         justify-content: center;
         border-radius: 20px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .post-card {
         padding: 1.5rem;
+    }
+
+    /* Fix scroll within posts */
+    .post-content {
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scroll on iOS */
+        padding-right: 10px;
+        /* Space for scrollbar */
+        /* Custom scrollbar style for content */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    .post-content::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .post-content::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
     }
 }

@@ -91,25 +91,79 @@
 }
 
 @media (max-width: 768px) {
+    .page-frame-container {
+        padding: 5px !important;
+        /* Small padding to see the border */
+        width: 100vw !important;
+        height: 100dvh !important;
+        background: transparent !important;
+        align-items: center !important;
+        /* Center vertically again */
+        box-sizing: border-box !important;
+    }
+
     .page-frame-layout {
-        width: 100%;
-        height: 100%;
-        border: none;
-        padding: 0;
-        box-shadow: none;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        border: 1px solid #777 !important;
+        /* Restore border */
+        padding: 4px !important;
+        /* Small gap for glass effect */
+        box-shadow: none !important;
+        background: rgba(255, 255, 255, 0.5) !important;
+        backdrop-filter: blur(5px) !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .page-frame-inner-border {
-        border: none;
-        flex-direction: column;
-        overflow: hidden;
+        border: 1px solid #777 !important;
+        /* Restore inner border */
+        background-color: #ffffff !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        border-radius: 0 !important;
     }
 
+    /* Restore sidebar as overlay for "custom scroll" */
     .page-frame-sidebar {
-        display: none;
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 60px !important;
+        /* Wide enough for SVG */
+        height: 100% !important;
+        background: transparent !important;
+        z-index: 100 !important;
+        pointer-events: none !important;
+        border: none !important;
+        backdrop-filter: none !important;
     }
 
     .page-frame-content {
-        padding: 0;
+        padding: 0 !important;
+        /* No shift, pure overlay */
+        width: 100% !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+
+    .page-frame-content::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    .content-wrapper {
+        min-height: 100% !important;
     }
 }

@@ -88,11 +88,10 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0.1) 0%, 
-    rgba(0, 0, 0, 0.15) 50%, 
-    rgba(0, 0, 0, 0.1) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.1) 100%);
 }
 
 .mini-tree-branches {
@@ -138,30 +137,26 @@
 
 /* О проекте - простые линии */
 .mini-tree-branch[data-branch-id="about"]::after {
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 12px,
-    rgba(0, 0, 0, 0.15) 12px,
-    rgba(0, 0, 0, 0.15) 14px
-  );
+  background: repeating-linear-gradient(90deg,
+      transparent,
+      transparent 12px,
+      rgba(0, 0, 0, 0.15) 12px,
+      rgba(0, 0, 0, 0.15) 14px);
 }
 
 /* Записи - волнистые линии */
 .mini-tree-branch[data-branch-id="notes"]::after {
-  background: 
-    repeating-linear-gradient(
-      45deg,
+  background:
+    repeating-linear-gradient(45deg,
       transparent,
       transparent 6px,
       rgba(0, 0, 0, 0.15) 6px,
-      rgba(0, 0, 0, 0.15) 8px
-    );
+      rgba(0, 0, 0, 0.15) 8px);
 }
 
 /* Поиск - точки */
 .mini-tree-branch[data-branch-id="search"]::after {
-  background: 
+  background:
     radial-gradient(circle at 25% 50%, rgba(0, 0, 0, 0.15) 2px, transparent 2px),
     radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 0.15) 2px, transparent 2px),
     radial-gradient(circle at 50% 25%, rgba(0, 0, 0, 0.1) 1.5px, transparent 1.5px),
@@ -171,28 +166,26 @@
 
 /* Философия - концентрические круги */
 .mini-tree-branch[data-branch-id="philosophy"]::after {
-  background: 
+  background:
     radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.12) 35%, rgba(0, 0, 0, 0.12) 38%, transparent 38%);
   background-size: 35px 35px;
 }
 
 /* Профиль - органические пятна */
 .mini-tree-branch[data-branch-id="person"]::after {
-  background: 
+  background:
     radial-gradient(ellipse at 40% 50%, rgba(0, 0, 0, 0.12) 35%, transparent 65%);
   background-size: 30px 22px;
 }
 
 /* Вход - диагональные штрихи */
 .mini-tree-branch[data-branch-id="login"]::after {
-  background: 
-    repeating-linear-gradient(
-      60deg,
+  background:
+    repeating-linear-gradient(60deg,
       transparent,
       transparent 5px,
       rgba(0, 0, 0, 0.15) 5px,
-      rgba(0, 0, 0, 0.15) 7px
-    );
+      rgba(0, 0, 0, 0.15) 7px);
 }
 
 .mini-tree-branch:hover::after {
@@ -260,32 +253,32 @@
     top: 1rem;
     left: 1rem;
   }
-  
+
   .mini-tree-toggle {
     width: 50px;
     height: 50px;
   }
-  
+
   .mini-tree-toggle svg {
     width: 32px;
     height: 32px;
   }
-  
+
   .music-toggle-mini {
     top: 1rem;
     right: 1rem;
   }
-  
+
   .music-toggle-mini img {
     width: 3.5rem;
   }
-  
+
   .mini-tree-menu {
     top: 60px;
     padding: 1rem;
     min-width: 160px;
   }
-  
+
   .mini-tree-branch {
     font-size: 0.9rem;
     padding: 0.4rem 0.5rem;

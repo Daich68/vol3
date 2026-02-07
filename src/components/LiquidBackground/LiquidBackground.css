@@ -4,6 +4,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    /* Fallback */
+    height: 100dvh;
     z-index: -1;
     overflow: hidden;
     background-color: #dcdcdc;
@@ -18,6 +20,8 @@
     height: 100%;
     filter: blur(80px);
     /* This creates the "liquid" merging effect */
+    transform: translateZ(0);
+    /* Optimize performance */
 }
 
 .blob {
@@ -78,5 +82,37 @@
 
     to {
         transform: translate(100px, 50px) scale(1.1);
+    }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .blob-static-1 {
+        width: 300px;
+        height: 300px;
+        top: -50px;
+        left: -50px;
+    }
+
+    .blob-static-2 {
+        width: 250px;
+        height: 250px;
+        bottom: -50px;
+        right: -50px;
+    }
+
+    .blob-interactive-1 {
+        width: 200px;
+        height: 200px;
+    }
+
+    .blob-interactive-2 {
+        width: 150px;
+        height: 150px;
+    }
+
+    .liquid-bg-wrapper {
+        filter: blur(40px);
+        /* Reduce blur for smaller blobs to keep shape */
     }
 }

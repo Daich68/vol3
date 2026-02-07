@@ -215,7 +215,15 @@
 }
 
 /* Mobile */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+    .login {
+        min-height: 100dvh;
+        padding: 1rem;
+        /* Ensure it's effectively centered */
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
     .login-hero-title {
         font-size: 3rem;
     }

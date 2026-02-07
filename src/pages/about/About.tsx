@@ -119,17 +119,23 @@ export const About: React.FC = () => {
 
         // 4. THREE-STAGE SCROLL SNAPPING
         // We snap between the three 85vh sections
-        ScrollTrigger.create({
-          trigger: ".about-content",
-          start: "top top",
-          end: "bottom bottom",
-          snap: {
-            snapTo: [0, 0.5, 1],
-            duration: { min: 0.4, max: 0.6 },
-            delay: 0.1,
-            ease: "power1.inOut"
+        // 4. THREE-STAGE SCROLL SNAPPING (Desktop Only)
+        ScrollTrigger.matchMedia({
+          "(min-width: 1025px)": function () {
+            ScrollTrigger.create({
+              trigger: ".about-content",
+              start: "top top",
+              end: "bottom bottom",
+              snap: {
+                snapTo: [0, 0.5, 1],
+                duration: { min: 0.4, max: 0.6 },
+                delay: 0.1,
+                ease: "power1.inOut"
+              }
+            });
           }
         });
+
 
         ScrollTrigger.refresh();
       }, containerRef);

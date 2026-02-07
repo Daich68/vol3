@@ -73,5 +73,10 @@
     height: 100%;
     mix-blend-mode: overlay;
     pointer-events: none;
-    /* Glare doesn't capture clicks */
+}
+
+@media (max-width: 768px) {
+    .interactive-object-container {
+        display: none !important;
+    }
 }

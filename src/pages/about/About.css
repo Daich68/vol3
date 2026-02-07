@@ -94,6 +94,7 @@
     text-transform: uppercase;
     position: relative;
     z-index: 1;
+    word-break: break-word;
 }
 
 .hero-subtitle {
@@ -174,17 +175,79 @@
 }
 
 /* Mobile Adjustments */
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
+    .features-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+    }
 
     .hero-section,
     .features-section,
     .navigation-section {
-        height: auto;
-        min-height: 92vh;
-        padding: 4rem 2rem;
+        height: auto !important;
+        min-height: 85dvh !important;
+        padding: 5rem 1.5rem !important;
+        justify-content: center !important;
     }
 
-    .features-grid {
-        grid-template-columns: 1fr;
+    .hero-logo-container {
+        width: 120% !important;
+        opacity: 0.4 !important;
+    }
+
+    .hero-title {
+        font-size: 3rem !important;
+        font-size: clamp(3rem, 12vw, 6rem) !important;
+        /* Larger base */
+        line-height: 1.1 !important;
+        font-weight: 900 !important;
+        /* Extra bold */
+        -webkit-text-stroke: 1px rgba(0, 0, 0, 0.1);
+        /* Subtle stroke for weight */
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+
+    .hero-section,
+    .features-section,
+    .navigation-section {
+        padding: 3rem 1.5rem !important;
+        min-height: 100dvh !important;
+    }
+
+    .hero-title {
+        font-size: 2.8rem !important;
+        font-size: clamp(2.5rem, 15vw, 4rem) !important;
+        font-weight: 900 !important;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        /* Heavier than 400 */
+        color: #333 !important;
+        /* Darker than #666 */
+        padding: 0 1rem !important;
+    }
+
+    .feature-item {
+        padding: 2rem 1.5rem !important;
+        border-width: 2px !important;
+        /* Thicker borders on cards too */
+    }
+
+    .feature-number {
+        font-weight: 900 !important;
+    }
+
+    .tree-divider {
+        gap: 1rem !important;
+        margin-bottom: 2rem !important;
+        font-weight: 800 !important;
     }
 }

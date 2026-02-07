@@ -258,14 +258,27 @@
 }
 
 /* Адаптивность */
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .tree-navigation {
     padding: 2rem 1rem;
-    min-height: 400px;
+    min-height: auto;
+    width: 100%;
+  }
+
+  .tree-trunk {
+    display: none;
   }
 
   .branches-container {
-    gap: 1.5rem;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .branch {
+    width: 100%;
+    justify-content: center !important;
+    /* Force center alignment */
   }
 
   .branch-level-1,
@@ -279,19 +292,37 @@
   }
 
   .branch-content {
-    padding: 1rem 1.5rem;
-    min-width: 150px;
+    padding: 1.2rem 1.5rem;
+    /* Larger touch area */
+    min-width: unset;
+    width: 100%;
+    max-width: 400px;
+    /* Constrain width for aesthetics */
+    text-align: center;
+    border-radius: 12px;
+    /* More rounded on mobile */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Softer shadow */
   }
 
   .branch-label {
-    font-size: 1.2rem;
-  }
-
-  .branch.hovered .branch-label {
-    color: #000;
+    font-size: 1.3rem;
   }
 
   .branch-description {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    white-space: normal;
+    /* Ensure text wraps */
+  }
+
+  /* Force video visibility on mobile */
+  .branch-video {
+    opacity: 0.6 !important;
+    /* Visible by default on mobile */
+  }
+
+  .branch-video-frame {
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1) !important;
   }
 }
