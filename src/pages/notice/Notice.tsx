@@ -87,6 +87,17 @@ export const NoticePage: React.FC = () => {
         };
     }, [isLoading, notices]);
 
+    useEffect(() => {
+        if (selectedNotice) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [selectedNotice]);
+
     if (isLoading) {
         return (
             <PageFrame>

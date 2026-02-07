@@ -217,7 +217,8 @@
     z-index: 1000;
     display: flex;
     justify-content: center;
-    overflow-y: scroll;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     /* Force scrolling for progress tracking */
     backdrop-filter: blur(15px);
     animation: overlayFade 0.5s cubic-bezier(0.23, 1, 0.32, 1);
@@ -333,5 +334,13 @@
         height: auto;
         min-height: 100vh;
         padding: 6rem 2rem;
+    }
+
+    .reading-content {
+        padding: 6rem 1.5rem;
+    }
+
+    .reading-sidebar {
+        width: 15px;
     }
 }
