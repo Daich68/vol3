@@ -16,7 +16,6 @@ import { MusicProvider } from "./contexts/MusicContext";
 function AppContent() {
     const location = useLocation();
     const isHomePage = location.pathname === "/" || location.pathname === "/about";
-    const isPhilosophyPage = location.pathname === "/philosophy";
 
     return (
         <>

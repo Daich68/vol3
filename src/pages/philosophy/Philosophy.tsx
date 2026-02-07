@@ -8,12 +8,12 @@ import "./Philosophy.css";
 gsap.registerPlugin(ScrollTrigger);
 
 export const Philosophy: React.FC = () => {
-  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let ctx: gsap.Context;
     const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
         // 1. Hero Animations
         gsap.from(".hero-title-phi", {
           y: 100,
@@ -95,7 +95,10 @@ export const Philosophy: React.FC = () => {
       }, containerRef);
     }, 100);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (

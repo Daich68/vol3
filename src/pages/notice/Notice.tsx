@@ -39,9 +39,10 @@ export const NoticePage: React.FC = () => {
 
     useEffect(() => {
         if (isLoading || !notices) return;
+        let ctx: gsap.Context;
 
         const timer = setTimeout(() => {
-            const ctx = gsap.context(() => {
+            ctx = gsap.context(() => {
                 // Hero Animation
                 gsap.from(".notice-hero h1", {
                     y: 60,
@@ -80,7 +81,10 @@ export const NoticePage: React.FC = () => {
             }, containerRef);
         }, 100);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+            if (ctx) ctx.revert();
+        };
     }, [isLoading, notices]);
 
     if (isLoading) {

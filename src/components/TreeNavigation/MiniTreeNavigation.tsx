@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMusic } from '../../contexts/MusicContext';
-import ear from "../../static/icons/ear.gif";
-import bliss from "../../static/icons/bliss.gif";
 import './MiniTreeNavigation.css';
 
 interface Branch {
@@ -17,7 +15,7 @@ export const MiniTreeNavigation: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { isPlaying, toggleMusic, playButtonSound } = useMusic();
+  const { toggleMusic, playButtonSound } = useMusic();
 
   const branches: Branch[] = [
     { id: 'about', label: 'о проекте', path: '/', pattern: 'M10,15 Q20,10 30,15 T50,15' },
@@ -39,10 +37,6 @@ export const MiniTreeNavigation: React.FC = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleToggleSound = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleMusic();
-  };
 
   const isCurrentPage = (path: string) => {
     if (path === '/') {

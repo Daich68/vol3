@@ -64,12 +64,14 @@ export const Search: React.FC = () => {
         setFilteredAuthors(filtered);
     }, [debouncedSearchQuery, authors]);
 
+    const hasResults = filteredAuthors.length > 0;
     useEffect(() => {
         if (isLoading) return;
+        let ctx: gsap.Context;
 
         // Use a small delay to ensure DOM is ready for GSAP to find elements
         const timer = setTimeout(() => {
-            const ctx = gsap.context(() => {
+            ctx = gsap.context(() => {
                 // Intro Animations
                 gsap.from(".search-hero-title", {
                     y: 60,
@@ -101,7 +103,7 @@ export const Search: React.FC = () => {
 
                 // Staggered reveal for author cards - only if not already visible/animating
                 // We use autoAlpha to handle both opacity and visibility
-                if (filteredAuthors.length > 0) {
+                if (hasResults) {
                     gsap.from(".author-card", {
                         scrollTrigger: {
                             trigger: ".search-results",
@@ -118,12 +120,13 @@ export const Search: React.FC = () => {
 
                 ScrollTrigger.refresh();
             }, containerRef);
-
-            return () => ctx.revert();
         }, 150);
 
-        return () => clearTimeout(timer);
-    }, [isLoading, filteredAuthors.length > 0]); // Only re-run when going from 0 to some authors
+        return () => {
+            clearTimeout(timer);
+            if (ctx) ctx.revert();
+        };
+    }, [isLoading, hasResults]); // Only re-run when going from 0 to some authors
 
     const getMostRecentPost = (authorId: string) => {
         const authorPosts = posts.filter((post) => post.author_id === authorId);

@@ -14,9 +14,10 @@ export const About: React.FC = () => {
   const navigationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let ctx: gsap.Context;
     // Small delay to ensure Lenis and DOM are ready
     const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
         // 1. Hero Animations
         gsap.from(".hero-title", {
           y: 100,
@@ -117,8 +118,6 @@ export const About: React.FC = () => {
           ease: "power3.out"
         });
 
-        // 4. THREE-STAGE SCROLL SNAPPING
-        // We snap between the three 85vh sections
         // 4. THREE-STAGE SCROLL SNAPPING (Desktop Only)
         ScrollTrigger.matchMedia({
           "(min-width: 1025px)": function () {
@@ -141,9 +140,11 @@ export const About: React.FC = () => {
       }, containerRef);
     }, 100);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (ctx) ctx.revert();
+    };
   }, []);
-
   return (
     <PageFrame>
       <div className="about" ref={containerRef}>

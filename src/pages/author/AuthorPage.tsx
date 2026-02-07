@@ -32,7 +32,6 @@ export const AuthorPage: React.FC = () => {
     const [playB] = useSound(buttonSound, { volume: 2, loop: false });
     const [isDictLoaded, setIsDictLoaded] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string>("");
     const [canWrite, setCanWrite] = useState<boolean>(true);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +44,7 @@ export const AuthorPage: React.FC = () => {
 
         const fetchAuthorData = async () => {
             setIsLoading(true);
-            setError("");
+            setIsLoading(true);
 
             try {
                 let currentUserID = safeLocalStorage.getItem("ID");
@@ -68,7 +67,7 @@ export const AuthorPage: React.FC = () => {
                 setDict(dictData[0] || undefined);
             } catch (error) {
                 console.error(error);
-                setError("не удалось загрузить данные автора");
+                console.error(error);
             } finally {
                 setIsDictLoaded(true);
                 setIsLoading(false);
