@@ -1,4 +1,4 @@
-const BaseUrl: string = "https://vol3.web-almanac.com";
+const BaseUrl: string = process.env.REACT_APP_API_URL || "https://vol3.web-almanac.com";
 const auth: string = "/authenticated"
 export const URLs = {
     Login: BaseUrl + "/login",
@@ -8,5 +8,5 @@ export const URLs = {
     GetPosts: BaseUrl + "/posts",
     PostPosts: BaseUrl + auth + "/posts",
     GetDict: BaseUrl + "/dictionaries",
-    PostDict: BaseUrl + auth +"/dictionaries",
+    PostDict: BaseUrl + auth + "/dictionaries",
 };
