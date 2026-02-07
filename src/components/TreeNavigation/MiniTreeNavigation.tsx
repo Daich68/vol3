@@ -15,7 +15,7 @@ export const MiniTreeNavigation: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { toggleMusic, playButtonSound } = useMusic();
+  const { playButtonSound } = useMusic();
 
   const branches: Branch[] = [
     { id: 'about', label: 'о проекте', path: '/', pattern: 'M10,15 Q20,10 30,15 T50,15' },

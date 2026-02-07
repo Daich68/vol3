@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
