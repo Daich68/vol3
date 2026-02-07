@@ -44,7 +44,8 @@ export const TreeNavigation: React.FC = () => {
       description: 'размышления о бытии',
       path: '/philosophy',
       level: 2,
-      pattern: 'M15,15 Q25,5 35,15 Q45,25 55,15 Q65,5 75,15'
+      pattern: 'M15,15 Q25,5 35,15 Q45,25 55,15 Q65,5 75,15',
+      videoSrc: '/grok-video-7223f3a3-740c-4475-94e7-61fb94c7e026.mp4'
     },
     {
       id: 'person',
@@ -52,7 +53,8 @@ export const TreeNavigation: React.FC = () => {
       description: 'ваша страница и словарик',
       path: '/person',
       level: 2,
-      pattern: 'M10,25 C20,15 30,35 40,25 C50,15 60,35 70,25'
+      pattern: 'M10,25 C20,15 30,35 40,25 C50,15 60,35 70,25',
+      videoSrc: '/grok-video-7223f3a3-740c-4475-94e7-61fb94c7e026 (1).mp4'
     },
     {
       id: 'login',
@@ -60,8 +62,10 @@ export const TreeNavigation: React.FC = () => {
       description: 'присоединиться к дереву',
       path: '/login',
       level: 2,
-      pattern: 'M20,15 Q30,25 40,15 T60,15 T80,15'
+      pattern: 'M20,15 Q30,25 40,15 T60,15 T80,15',
+      videoSrc: '/grok-video-7223f3a3-740c-4475-94e7-61fb94c7e026.mp4'
     },
+
   ];
 
   const handleBranchClick = (path: string) => {

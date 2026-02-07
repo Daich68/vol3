@@ -16,7 +16,6 @@ export const useLenis = (wrapperRef?: React.RefObject<HTMLElement | null>) => {
             gestureOrientation: 'vertical',
             smoothWheel: true,
             wheelMultiplier: 1,
-            smoothTouch: false,
             touchMultiplier: 2,
             infinite: false,
             wrapper: wrapperRef?.current || window,

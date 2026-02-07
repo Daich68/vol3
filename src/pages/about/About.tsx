@@ -162,9 +162,22 @@ export const About: React.FC = () => {
                 className="hero-logo-fill logo-fill-layer"
               />
             </div>
+            <div className="header-details">
+              <div className="detail-top-bar">
+                <span className="detail-tag">INDEX.VOL_3</span>
+                <span className="detail-line" />
+                <span className="detail-status">ALMANAC_LIVE</span>
+              </div>
+              <div className="corner-mark top-left" />
+              <div className="corner-mark top-right" />
+              <div className="corner-mark bottom-left" />
+              <div className="corner-mark bottom-right" />
+              <div className="side-label">PUBLIC_DOMAIN_PROJECT</div>
+            </div>
             <h1 className="hero-title">web-almanac</h1>
             <p className="hero-subtitle">Проект свободного распространения е-литературы</p>
           </section>
+
 
           {/* STAGE 2: Features */}
           <section className="features-section" ref={featuresRef}>

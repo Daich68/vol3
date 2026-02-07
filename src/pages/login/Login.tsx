@@ -160,10 +160,22 @@ export const Login: React.FC = () => {
         <PageFrame showScroll={false}>
             <div className="login" ref={containerRef}>
                 <div className="login-hero">
+                    <div className="header-details">
+                        <div className="detail-top-bar">
+                            <span className="detail-tag">AUTH.GATE_01</span>
+                            <span className="detail-line" />
+                            <span className="detail-status">IDENT_WAITING</span>
+                        </div>
+                        <div className="corner-mark top-left" />
+                        <div className="corner-mark top-right" />
+                        <div className="corner-mark bottom-left" />
+                        <div className="corner-mark bottom-right" />
+                    </div>
                     <h1 className="login-hero-title">
                         {isRegister ? "creation" : "entrance"}
                     </h1>
                 </div>
+
 
                 <div className="login-container">
                     <div className="login-card">

@@ -191,7 +191,20 @@ export const AuthorPage: React.FC = () => {
                 <div className="author-content-snap">
                     {/* STAGE 1: Hero */}
                     <section className="author-section author-hero">
+                        <div className="header-details">
+                            <div className="detail-top-bar">
+                                <span className="detail-tag">PROFILE.ID_{author._id.slice(-4)}</span>
+                                <span className="detail-line" />
+                                <span className="detail-status">ACCESS_GRANTED</span>
+                            </div>
+                            <div className="corner-mark top-left" />
+                            <div className="corner-mark top-right" />
+                            <div className="corner-mark bottom-left" />
+                            <div className="corner-mark bottom-right" />
+                            <div className="side-label">AUTHOR_VAULT_VOL3</div>
+                        </div>
                         <div className="author-hero-accent">{author.login.charAt(0)}</div>
+
                         <div className="author-hero-main">
                             <div className="author-meta-top">
                                 <span className="meta-id">vol_{author._id.slice(-4)}</span>

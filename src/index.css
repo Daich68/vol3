@@ -154,3 +154,99 @@ button {
     line-height: 1.5;
   }
 }
+
+/* Global Header Details (Elegant Almanac Style) */
+.header-details {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  padding: 3rem;
+  box-sizing: border-box;
+}
+
+.detail-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  opacity: 0.4;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  font-family: monospace;
+  color: #111;
+}
+
+.detail-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+}
+
+.corner-mark {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.corner-mark.top-left {
+  top: 2rem;
+  left: 2rem;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner-mark.top-right {
+  top: 2rem;
+  right: 2rem;
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner-mark.bottom-left {
+  bottom: 2rem;
+  left: 2rem;
+  border-right: none;
+  border-top: none;
+}
+
+.corner-mark.bottom-right {
+  bottom: 2rem;
+  right: 2rem;
+  border-left: none;
+  border-top: none;
+}
+
+.side-label {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-size: 0.6rem;
+  font-family: monospace;
+  opacity: 0.3;
+  letter-spacing: 0.4em;
+  transform-origin: center right;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .header-details {
+    padding: 1.5rem;
+  }
+
+  .detail-top-bar,
+  .side-label {
+    display: none;
+    /* Keep mobile clean */
+  }
+
+  .corner-mark {
+    width: 15px;
+    height: 15px;
+    top: 1rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 1rem !important;
+  }
+}

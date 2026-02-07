@@ -25,10 +25,14 @@
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    overflow: hidden;
 }
+
+
 
 /* Specific Hero adjustments for background video */
 .hero-section {
+
     padding: 0 5vw;
 }
 
