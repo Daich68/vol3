@@ -41,7 +41,7 @@ export const WritePostModal: React.FC<{
             const updateTimer = () => {
                 setTimer(calculateTimeToNextDay());
             };
-            
+
             updateTimer();
             const interval = setInterval(updateTimer, 60000); // Update every minute
 
@@ -80,13 +80,13 @@ export const WritePostModal: React.FC<{
         if (postText.length > 0 && postText.length <= MAX_LENGTH && !isSubmitting) {
             setIsSubmitting(true);
             setErrorMessage("");
-            
+
             const newPost: Post = {
                 time_publication: new Date(Date.now()),
                 text: postText,
                 author_id: userID,
             };
-            
+
             try {
                 await SendPost(newPost);
                 setPostText("");
@@ -116,88 +116,111 @@ export const WritePostModal: React.FC<{
     if (!isOpen) return null;
 
     return (
-        <div 
-            className="modal" 
+        <div
+            className={`dict-modal-overlay ${isOpen ? 'open' : ''}`}
             onClick={handleBackdropClick}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
         >
-            <div className="modal-content" ref={modalRef}>
-                <button 
-                    className="close" 
-                    onClick={handleClose}
-                    aria-label="закрыть"
-                    disabled={isSubmitting}
-                >
-                    &times;
-                </button>
-                <h2 id="modal-title">новый пост</h2>
-
-                {canWrite ? (
-                    <div>
-                        {/* GIF Picker */}
-                        <div className="gif-picker" role="toolbar" aria-label="выбор гифок">
-                            {Gifs.map((gif) => (
-                                <button
-                                    key={gif.tag}
-                                    onClick={() => handleAddGif(gif.tag)}
-                                    className="gif-item"
-                                    type="button"
-                                    aria-label={`добавить ${gif.alt}`}
-                                    disabled={isSubmitting}
-                                >
-                                    <img src={gif.src} alt={gif.alt} className="gif-thumbnail" />
-                                </button>
-                            ))}
+            <div className="dict-modal-content" ref={modalRef}>
+                <div className="dict-modal-inner">
+                    <div className="dict-modal-header">
+                        <div className="dict-modal-header-text">
+                            <span className="dict-modal-subtitle">Создание записи</span>
+                            <h2 id="modal-title">Новый пост</h2>
                         </div>
-
-                        {/* Textarea for writing the post */}
-                        <label htmlFor="post-textarea" className="visually-hidden">
-                            текст поста
-                        </label>
-                        <textarea
-                            id="post-textarea"
-                            value={postText}
-                            onChange={handleInputChange}
-                            placeholder="напиши что-то, не торопись"
-                            disabled={isSubmitting}
-                            aria-describedby={errorMessage ? "post-error" : undefined}
-                            aria-invalid={!!errorMessage}
-                        ></textarea>
-
-                        {/* Display error message if character limit is exceeded */}
-                        {errorMessage && (
-                            <div id="post-error" className="error-message" role="alert">
-                                {errorMessage}
-                            </div>
-                        )}
-
-                        {/* Preview of post content */}
-                        <div
-                            className="post-preview"
-                            dangerouslySetInnerHTML={{
-                                __html: DisplayGif(postText),
-                            }}
-                            aria-label="предпросмотр поста"
-                        ></div>
-
-                        {/* Post button */}
                         <button
-                            onClick={handlePost}
-                            disabled={postText.length === 0 || postText.length > MAX_LENGTH || isSubmitting}
-                            aria-busy={isSubmitting}
+                            className="dict-close-btn"
+                            onClick={handleClose}
+                            aria-label="закрыть"
+                            disabled={isSubmitting}
                         >
-                            {isSubmitting ? "публикация..." : "опубликовать"}
+                            &times;
                         </button>
                     </div>
-                ) : (
-                    <div>
-                        <p>сегодня ты уже сделал пост</p>
-                        <p>в следующий раз сможешь опубликовать через:</p>
-                        <p><strong>{formatTime(timer)}</strong></p>
+
+                    <div className="dict-scroll-area" data-lenis-prevent>
+                        {canWrite ? (
+                            <div className="write-post-form">
+                                {/* GIF Picker */}
+                                <div className="gif-selection-label">Выберите символ (опционально)</div>
+                                <div className="gif-picker" role="toolbar" aria-label="выбор гифок">
+                                    {Gifs.map((gif) => (
+                                        <button
+                                            key={gif.tag}
+                                            onClick={() => handleAddGif(gif.tag)}
+                                            className="gif-item"
+                                            type="button"
+                                            aria-label={`добавить ${gif.alt}`}
+                                            disabled={isSubmitting}
+                                        >
+                                            <div className="gif-thumbnail-wrapper">
+                                                <img src={gif.src} alt={gif.alt} className="gif-thumbnail" />
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="write-post-input-group">
+                                    <label htmlFor="post-textarea" className="dict-item-tag">
+                                        текст поста
+                                    </label>
+                                    <textarea
+                                        id="post-textarea"
+                                        className="dict-textarea write-textarea"
+                                        value={postText}
+                                        onChange={handleInputChange}
+                                        placeholder="напиши что-то, не торопись..."
+                                        disabled={isSubmitting}
+                                        aria-describedby={errorMessage ? "post-error" : undefined}
+                                        aria-invalid={!!errorMessage}
+                                        rows={3}
+                                    />
+                                </div>
+
+                                {errorMessage && (
+                                    <div id="post-error" className="error-message" role="alert">
+                                        {errorMessage}
+                                    </div>
+                                )}
+
+                                <div className="preview-label dict-item-tag">предпросмотр</div>
+                                <div
+                                    className="post-preview-container"
+                                    dangerouslySetInnerHTML={{
+                                        __html: DisplayGif(postText),
+                                    }}
+                                    aria-label="предпросмотр поста"
+                                />
+                            </div>
+                        ) : (
+                            <div className="cooldown-state">
+                                <p className="cooldown-message">Сегодня вы уже внесли свой вклад в дерево.</p>
+                                <p className="cooldown-sub">Возможность следующей публикации появится через:</p>
+                                <div className="cooldown-timer">{formatTime(timer)}</div>
+                            </div>
+                        )}
                     </div>
-                )}
+
+                    <div className="dict-modal-footer">
+                        {canWrite ? (
+                            <>
+                                <span className="dict-footer-meta">энергия кристаллизации слов</span>
+                                <button
+                                    className="dict-save-btn"
+                                    onClick={handlePost}
+                                    disabled={postText.length === 0 || postText.length > MAX_LENGTH || isSubmitting}
+                                    aria-busy={isSubmitting}
+                                >
+                                    {isSubmitting ? "публикация..." : "опубликовать"}
+                                </button>
+                            </>
+                        ) : (
+                            <span className="dict-footer-meta">режим накопления мыслей</span>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

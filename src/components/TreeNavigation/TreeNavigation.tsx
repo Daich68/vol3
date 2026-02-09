@@ -23,7 +23,7 @@ export const TreeNavigation: React.FC = () => {
     {
       id: 'notes',
       label: 'записи',
-      description: 'ваши мысли и наблюдения',
+      description: 'мысли и наблюдения',
       path: '/notes',
       level: 1,
       pattern: 'M20,10 Q30,5 40,10 T60,10 Q70,15 80,10',
@@ -41,7 +41,7 @@ export const TreeNavigation: React.FC = () => {
     {
       id: 'philosophy',
       label: 'философия',
-      description: 'размышления о бытии',
+      description: 'о нашем проекте',
       path: '/philosophy',
       level: 2,
       pattern: 'M15,15 Q25,5 35,15 Q45,25 55,15 Q65,5 75,15'

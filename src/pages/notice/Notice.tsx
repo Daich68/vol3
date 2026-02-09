@@ -64,18 +64,8 @@ export const NoticePage: React.FC = () => {
                     ease: "power3.out"
                 });
 
-                // Snapping
-                ScrollTrigger.create({
-                    trigger: ".notice-container",
-                    start: "top top",
-                    end: "bottom bottom",
-                    snap: {
-                        snapTo: [0, 0.5, 1],
-                        duration: { min: 0.4, max: 0.6 },
-                        delay: 0.1,
-                        ease: "power1.inOut"
-                    }
-                });
+                // Removed Snapping for dynamic length
+                ScrollTrigger.refresh();
 
                 ScrollTrigger.refresh();
             }, containerRef);
@@ -150,10 +140,6 @@ export const NoticePage: React.FC = () => {
                         )}
                     </section>
 
-                    {/* STAGE 3: Final Aesthetic Stop */}
-                    <section className="notice-thank-you">
-                        <h2>спасибо за чтение</h2>
-                    </section>
                 </div>
             </div>
 

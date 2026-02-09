@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext, useState } from "react";
 import "./App.css";
 import { Login } from "./pages/login/Login";
 import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
@@ -12,6 +12,8 @@ import { AuthorPage } from "./pages/author/AuthorPage";
 import { NotFound } from "./pages/notfound/NotFound";
 import { safeLocalStorage } from "./utils/localStorage";
 import { MusicProvider } from "./contexts/MusicContext";
+import { Preloader } from "./components/Preloader/Preloader";
+import { LoaderContext } from "./contexts/LoaderContext";
 
 function AppContent() {
     const location = useLocation();
@@ -40,12 +42,31 @@ function AppContent() {
 }
 
 function App() {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [showPreloader, setShowPreloader] = useState(true);
+
+    const handlePreloaderComplete = () => {
+        setShowPreloader(false);
+    };
+
+    const handlePreloaderStartExit = () => {
+        setIsLoaded(true);
+    };
+
     return (
-        <BrowserRouter>
-            <MusicProvider>
-                <AppContent />
-            </MusicProvider>
-        </BrowserRouter>
+        <LoaderContext.Provider value={{ isLoaded }}>
+            {showPreloader && (
+                <Preloader
+                    onComplete={handlePreloaderComplete}
+                    onStartExit={handlePreloaderStartExit}
+                />
+            )}
+            <BrowserRouter>
+                <MusicProvider>
+                    <AppContent />
+                </MusicProvider>
+            </BrowserRouter>
+        </LoaderContext.Provider>
     );
 }
 

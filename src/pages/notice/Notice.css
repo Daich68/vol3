@@ -7,11 +7,11 @@
     flex-direction: column;
 }
 
-/* Three-stage layout */
+/* Two-stage layout */
 .notice-hero,
-.notice-list-section,
-.notice-thank-you {
-    height: 85vh;
+.notice-list-section {
+    min-height: 85vh;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -51,13 +51,14 @@
 .notices-wrapper {
     width: 100%;
     max-width: 900px;
-    height: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.5rem;
     position: relative;
-    padding: 2rem;
+    padding: 10vh 2rem;
+    /* Consistent padding at top and bottom */
 }
 
 /* Central Trunk Line */

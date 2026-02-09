@@ -1,0 +1,209 @@
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    /* Light Theme */
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    pointer-events: all;
+    color: #1a1a1a;
+    /* Dark text */
+    font-family: 'Entropia', 'Courier New', monospace;
+}
+
+/* Abstract Background Pattern */
+.preloader-bg-pattern {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image:
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 15px);
+    opacity: 0.6;
+    z-index: 0;
+    pointer-events: none;
+    transform: rotate(5deg);
+}
+
+
+.preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+    padding: 3rem;
+}
+
+.preloader-center-stage {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    /* For absolute centering of circle */
+}
+
+/* CIRCULAR PROGRESS INDICATOR */
+.preloader-circle-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vh;
+    height: 80vh;
+    max-width: 800px;
+    max-height: 800px;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-ring__base-circle,
+.progress-ring__fill-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.5s ease;
+}
+
+/* Faint Background Layer - Minimalist */
+.progress-ring__base-circle {
+    opacity: 0.03;
+    /* Extremely subtle */
+    filter: brightness(0);
+    /* Pure black but very faint */
+}
+
+/* Glowing Fill Layer - Refined & Light */
+.progress-ring__fill-circle {
+    opacity: 0;
+    /* Pure neutral white glow - extremely minimalist */
+    filter: invert(0.1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+
+    /* Center the mask specifically for this asset if it's off-center,
+       but 50% 50% is the best default for object-fit: contain */
+    -webkit-mask-image: conic-gradient(black var(--fill-angle, 0deg), transparent 0deg);
+    mask-image: conic-gradient(black var(--fill-angle, 0deg), transparent 0deg);
+}
+
+.progress-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    /* Start from top */
+    overflow: visible;
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.1s linear;
+    transform-origin: 50% 50%;
+    stroke: rgba(0, 0, 0, 0.05);
+    /* Subtle track */
+    vector-effect: non-scaling-stroke;
+    /* Keep stroke width constant */
+}
+
+.progress-ring__circle--progress {
+    stroke: rgba(26, 26, 26, 0.8);
+    /* Dark progress */
+    stroke-linecap: square;
+    /* Stylistic choice */
+}
+
+.preloader-logo-container {
+    position: relative;
+    z-index: 2;
+    /* Clearly above the circle */
+    width: 20%;
+    /* Relative to screen width */
+    min-width: 120px;
+    max-width: 300px;
+    perspective: 1000px;
+}
+
+.preloader-logo {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Footer & Meta Info */
+.preloader-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+}
+
+.preloader-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    padding-left: 1rem;
+    color: #333;
+}
+
+.preloader-counter {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5rem;
+    font-weight: 900;
+    opacity: 0.15;
+    font-family: 'DeltaBlock', sans-serif;
+    letter-spacing: -0.05em;
+    color: #000;
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+.preloader-scroll-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.8;
+}
+
+.preloader-scroll {
+    width: 25px;
+    height: auto;
+    opacity: 0.7;
+    animation: pulse-scroll 2s infinite ease-in-out;
+}
+
+
+@keyframes pulse-scroll {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}

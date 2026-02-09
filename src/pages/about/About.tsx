@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useLayoutEffect } from "react";
 import { TreeNavigation } from "../../components/TreeNavigation/TreeNavigation";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./About.css";
+import { useLoader } from "../../contexts/LoaderContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,7 +14,11 @@ export const About: React.FC = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const { isLoaded } = useLoader();
+
+  useLayoutEffect(() => {
+    if (!isLoaded) return;
+
     let ctx: gsap.Context;
     // Small delay to ensure Lenis and DOM are ready
     const timer = setTimeout(() => {
@@ -144,10 +149,11 @@ export const About: React.FC = () => {
       clearTimeout(timer);
       if (ctx) ctx.revert();
     };
-  }, []);
+  }, [isLoaded]);
+
   return (
     <PageFrame>
-      <div className="about" ref={containerRef}>
+      <div className="about" ref={containerRef} style={{ visibility: isLoaded ? 'visible' : 'hidden' }}>
         <div className="about-content">
           {/* STAGE 1: Hero */}
           <section className="hero-section" ref={heroRef}>
