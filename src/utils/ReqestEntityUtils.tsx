@@ -11,7 +11,10 @@ async function apiRequest<T>(url: string, options: FetchOptions): Promise<T> {
     if (!response.ok) {
         throw new Error(response.statusText);
     }
-    return response.json();
+    const text = await response.text();
+    // Verify if response is empty. If so, return empty array/object to prevent crash.
+    // Most getters return arrays, so [] is a safe fallback.
+    return text ? JSON.parse(text) : ([] as unknown as T);
 }
 
 async function apiRequestWithoutResponseBody(url: string, options: FetchOptions): Promise<string> {
