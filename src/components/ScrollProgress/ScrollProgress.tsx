@@ -15,7 +15,9 @@ const ProgressNumber = ({ value }: { value: any }) => {
 
   useEffect(() => {
     return value.onChange((latest: number) => {
-      setDisplayValue(Math.round(latest * 100));
+      const rounded = Math.round(latest * 100);
+      const clamped = Math.max(0, Math.min(100, rounded));
+      setDisplayValue(clamped);
     });
   }, [value]);
 

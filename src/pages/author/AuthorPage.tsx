@@ -122,18 +122,7 @@ export const AuthorPage: React.FC = () => {
                     clearProps: "all"
                 });
 
-                // Snap sections
-                ScrollTrigger.create({
-                    trigger: ".author-content-snap",
-                    start: "top top",
-                    end: "bottom bottom",
-                    snap: {
-                        snapTo: [0, 1],
-                        duration: { min: 0.4, max: 0.6 },
-                        delay: 0,
-                        ease: "power1.inOut"
-                    }
-                });
+                // Snap sections REMOVED
 
                 // Post reveal
                 gsap.from(".post-card", {

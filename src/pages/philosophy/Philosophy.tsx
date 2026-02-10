@@ -64,17 +64,7 @@ export const Philosophy: React.FC = () => {
         });
 
         // 4. Snap Scrolling
-        ScrollTrigger.create({
-          trigger: ".philosophy-content-snap",
-          start: "top top",
-          end: "bottom bottom",
-          snap: {
-            snapTo: [0, 0.25, 0.5, 0.75, 1],
-            duration: { min: 0.4, max: 0.6 },
-            delay: 0.1,
-            ease: "power1.inOut"
-          }
-        });
+        // 4. Snap Scrolling REMOVED
 
         // 5. Scroll Path Fill Animation
         gsap.to(".scroll-path-fill", {
