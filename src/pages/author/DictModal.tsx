@@ -16,6 +16,7 @@ interface DictModalProps {
 export const DictModal: React.FC<DictModalProps> = ({ isOpen, onClose, dict, onUpdateDict, editable }) => {
     const [localDict, setLocalDict] = useState(dict || []);
     const [isSaving, setIsSaving] = useState(false);
+    const [tooltip, setTooltip] = useState<{ x: number, y: number, meaning: string, tag: string } | null>(null);
     const modalRef = useRef<HTMLDivElement>(null);
 
     // Sync local state when dict prop changes
@@ -29,6 +30,20 @@ export const DictModal: React.FC<DictModalProps> = ({ isOpen, onClose, dict, onU
             onClose();
         }
     });
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (tooltip) {
+            setTooltip(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null);
+        }
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent, tag: string, meaning: string) => {
+        setTooltip({ x: e.clientX, y: e.clientY, tag, meaning });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip(null);
+    };
 
     const handleChange = (gifTag: string, value: string) => {
         setLocalDict(prev => {
@@ -66,6 +81,7 @@ export const DictModal: React.FC<DictModalProps> = ({ isOpen, onClose, dict, onU
         <div
             className={`dict-modal-overlay ${isOpen ? 'open' : ''}`}
             onClick={handleBackdropClick}
+            onMouseMove={handleMouseMove}
             role="dialog"
             aria-modal="true"
         >
@@ -90,30 +106,43 @@ export const DictModal: React.FC<DictModalProps> = ({ isOpen, onClose, dict, onU
                         <ul className="dict-list">
                             {Gifs.map((gif) => {
                                 const entry = localDict.find((entry) => entry.gif_tag === gif.tag);
+                                const currentMeaning = entry?.meaning || "этот символ пока хранит молчание";
                                 return (
                                     <li key={gif.tag} className="dict-premium-item">
-                                        <div className="dict-item-visual-wrapper">
+                                        <div
+                                            className="dict-item-visual-wrapper"
+                                            onMouseEnter={(e) => handleMouseEnter(e, gif.tag, currentMeaning)}
+                                            onMouseLeave={handleMouseLeave}
+                                        >
                                             <div className="dict-item-visual">
                                                 <img src={gif.src} alt={gif.alt} />
+                                                <div className="dict-visual-glitch" />
                                             </div>
                                             <div className="dict-visual-shadow" />
                                         </div>
                                         <div className="dict-item-info">
-                                            <span className="dict-item-tag">index_{gif.tag}</span>
-                                            {editable ? (
-                                                <textarea
-                                                    className="dict-textarea"
-                                                    value={entry ? entry.meaning : ""}
-                                                    onChange={(e) => handleChange(gif.tag, e.target.value)}
-                                                    placeholder="определите это чувство..."
-                                                    disabled={isSaving}
-                                                    rows={1}
-                                                />
-                                            ) : (
-                                                <p className="dict-meaning-readonly">
-                                                    {entry?.meaning || "этот символ пока хранит молчание"}
-                                                </p>
-                                            )}
+                                            <div className="dict-syntax-group">
+                                                <span className="dict-syntax-label">LEXEME</span>
+                                                <span className="dict-item-tag">{gif.tag}</span>
+                                            </div>
+
+                                            <div className="dict-syntax-group">
+                                                <span className="dict-syntax-label">VALUE</span>
+                                                {editable ? (
+                                                    <textarea
+                                                        className="dict-textarea"
+                                                        value={entry ? entry.meaning : ""}
+                                                        onChange={(e) => handleChange(gif.tag, e.target.value)}
+                                                        placeholder="определите это чувство..."
+                                                        disabled={isSaving}
+                                                        rows={1}
+                                                    />
+                                                ) : (
+                                                    <p className="dict-meaning-readonly">
+                                                        {currentMeaning}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
                                     </li>
                                 );
@@ -139,6 +168,23 @@ export const DictModal: React.FC<DictModalProps> = ({ isOpen, onClose, dict, onU
                     )}
                 </div>
             </div>
+
+            {tooltip && (
+                <div
+                    className="dict-cursor-tooltip"
+                    style={{
+                        left: `${tooltip.x + 20}px`,
+                        top: `${tooltip.y + 20}px`
+                    }}
+                >
+                    <div className="tooltip-header">
+                        <span className="tooltip-tag">{tooltip.tag}</span>
+                        <div className="tooltip-line" />
+                    </div>
+                    <p className="tooltip-meaning">{tooltip.meaning}</p>
+                    <div className="tooltip-footer">DATA_RECALL_VOL3</div>
+                </div>
+            )}
         </div>
     );
 };

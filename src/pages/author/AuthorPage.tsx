@@ -286,6 +286,7 @@ export const AuthorPage: React.FC = () => {
                             playB();
                         }}
                         userID={userID}
+                        dict={dict?.dict || []}
                         refreshPosts={() => {
                             setRefreshPosts((prev) => !prev);
                             playB();

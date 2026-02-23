@@ -10,7 +10,7 @@ import doom from "../../static/icons/doom.gif";
 import temple from "../../static/icons/temple.gif";
 import fb from "../../static/icons/fb.gif";
 import bnd from "../../static/icons/bnd.gif";
-import {DictEntry} from "../../entity/Entity";
+import { DictEntry } from "../../entity/Entity";
 
 export const Gifs = [
     { tag: ":gif-ear:", src: ear, alt: "Ear GIF" },
@@ -49,7 +49,10 @@ export const DisplayGifWithMean = (text: string, dict: DictEntry[]) => {
             regex,
             `<span class="gif-container">
                   <img style="width: 8rem" src="${gif.src}" alt="${gif.alt}" class="gif-image"/>
-                <span class="gif-tooltip">${entry?.meaning || "?"}</span>
+                <span class="gif-tooltip">
+                    <span class="gif-tooltip-header"><span>SYNTAX_DECODE</span></span>
+                    <span class="gif-tooltip-meaning">${entry?.meaning || "?"}</span>
+                </span>
             </span>`
         );
     });

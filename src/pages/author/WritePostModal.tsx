@@ -5,18 +5,21 @@ import { SendPost } from "../../requests/Api";
 import { DisplayGif, Gifs } from "./Gifs";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
+import { DictEntry } from "../../entity/Entity";
 
 export const WritePostModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
     userID: string;
+    dict: DictEntry[];
     refreshPosts: () => void;
     canWrite: boolean;
-}> = ({ isOpen, onClose, userID, refreshPosts, canWrite }) => {
+}> = ({ isOpen, onClose, userID, dict, refreshPosts, canWrite }) => {
     const [postText, setPostText] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [timer, setTimer] = useState<number>(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tooltip, setTooltip] = useState<{ x: number, y: number, meaning: string, tag: string } | null>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const MAX_LENGTH = 10000;
 
@@ -26,6 +29,20 @@ export const WritePostModal: React.FC<{
             onClose();
         }
     });
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (tooltip) {
+            setTooltip(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null);
+        }
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent, tag: string, meaning: string) => {
+        setTooltip({ x: e.clientX, y: e.clientY, tag, meaning });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip(null);
+    };
 
     // Function to calculate time difference to the next day
     const calculateTimeToNextDay = () => {
@@ -119,6 +136,7 @@ export const WritePostModal: React.FC<{
         <div
             className={`dict-modal-overlay ${isOpen ? 'open' : ''}`}
             onClick={handleBackdropClick}
+            onMouseMove={handleMouseMove}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
@@ -146,20 +164,27 @@ export const WritePostModal: React.FC<{
                                 {/* GIF Picker */}
                                 <div className="gif-selection-label">Выберите символ (опционально)</div>
                                 <div className="gif-picker" role="toolbar" aria-label="выбор гифок">
-                                    {Gifs.map((gif) => (
-                                        <button
-                                            key={gif.tag}
-                                            onClick={() => handleAddGif(gif.tag)}
-                                            className="gif-item"
-                                            type="button"
-                                            aria-label={`добавить ${gif.alt}`}
-                                            disabled={isSubmitting}
-                                        >
-                                            <div className="gif-thumbnail-wrapper">
-                                                <img src={gif.src} alt={gif.alt} className="gif-thumbnail" />
-                                            </div>
-                                        </button>
-                                    ))}
+                                    {Gifs.map((gif) => {
+                                        const entry = dict.find(e => e.gif_tag === gif.tag);
+                                        const currentMeaning = entry?.meaning || "?? [unknown_value]";
+                                        return (
+                                            <button
+                                                key={gif.tag}
+                                                onClick={() => handleAddGif(gif.tag)}
+                                                className="gif-item-premium"
+                                                onMouseEnter={(e) => handleMouseEnter(e, gif.tag, currentMeaning)}
+                                                onMouseLeave={handleMouseLeave}
+                                                type="button"
+                                                aria-label={`добавить ${gif.alt}`}
+                                                disabled={isSubmitting}
+                                            >
+                                                <div className="gif-thumbnail-wrapper">
+                                                    <img src={gif.src} alt={gif.alt} className="gif-thumbnail" />
+                                                    <div className="dict-visual-glitch" />
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
 
                                 <div className="write-post-input-group">
@@ -222,6 +247,23 @@ export const WritePostModal: React.FC<{
                     </div>
                 </div>
             </div>
+
+            {tooltip && (
+                <div
+                    className="dict-cursor-tooltip"
+                    style={{
+                        left: `${tooltip.x + 20}px`,
+                        top: `${tooltip.y + 20}px`
+                    }}
+                >
+                    <div className="tooltip-header">
+                        <span className="tooltip-tag">{tooltip.tag}</span>
+                        <div className="tooltip-line" />
+                    </div>
+                    <p className="tooltip-meaning">{tooltip.meaning}</p>
+                    <div className="tooltip-footer">SYNTAX_PROMPT_VOL3</div>
+                </div>
+            )}
         </div>
     );
 };

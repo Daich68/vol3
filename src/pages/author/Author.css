@@ -265,13 +265,88 @@
 /* GIF styles (inherited from DisplayGifWithMean) */
 .gif-container {
     cursor: help;
+    display: inline-block;
+    position: relative;
     border-bottom: 2px solid rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
 .gif-container:hover {
     border-bottom-color: #000;
-    color: #000;
+}
+
+.gif-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #fff;
+    color: #1a1a1a;
+    padding: 0.8rem 1.2rem;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+
+    /* Double Border Aesthetic */
+    border: 1px solid #1a1a1a;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 4px rgba(220, 220, 220, 0.3);
+
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+}
+
+.gif-tooltip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.gif-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1a1a1a;
+}
+
+/* Tooltip Interior Styling */
+.gif-tooltip-header {
+    font-family: 'DeltaBlock', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    color: #aaa;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+}
+
+.gif-tooltip-meaning {
+    font-size: 1rem;
+    line-height: 1.4;
+    font-style: italic;
+    color: #333;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.gif-container:hover .gif-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .author-empty-state {
