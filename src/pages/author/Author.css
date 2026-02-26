@@ -403,4 +403,40 @@
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 4px;
     }
+
+    /* Fix GIF tooltips on mobile - use a bottom overlay style */
+    .gif-tooltip {
+        position: fixed;
+        bottom: 2rem;
+        left: 50% !important;
+        /* Force override */
+        transform: translateX(-50%) translateY(20px) !important;
+        width: calc(100% - 4rem) !important;
+        max-width: 500px;
+        z-index: 9999;
+        pointer-events: none;
+        box-sizing: border-box;
+        text-align: center;
+        background: #fff;
+        padding: 1.2rem;
+        border: 1px solid #000;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .gif-tooltip::after {
+        display: none !important;
+    }
+
+    .gif-container:active .gif-tooltip,
+    .gif-container:hover .gif-tooltip {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(-50%) translateY(0) !important;
+    }
+
+    /* Ensure gif containers don't break layout */
+    .gif-image {
+        max-width: 100%;
+        height: auto;
+    }
 }

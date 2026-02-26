@@ -67,8 +67,7 @@ export const Login: React.FC = () => {
     };
 
     const validateLogin = (login: string): boolean => {
-        const loginRegex = /^[A-Za-z\d\s]{5,}$/;
-        return loginRegex.test(login);
+        return login.length >= 5;
     };
 
     const isLoginExist = async (login: string): Promise<boolean> => {
@@ -111,7 +110,7 @@ export const Login: React.FC = () => {
         }
 
         if (!validateLogin(login)) {
-            setLoginError("минимум 5 символов и буквы")
+            setLoginError("минимум 5 символов")
             return;
         }
 
