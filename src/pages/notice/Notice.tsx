@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { GetNotices } from "../../requests/Api";
 import { Notice } from "../../entity/Entity";
 import { Loader } from "../../components/Loader/Loader";
@@ -12,10 +13,14 @@ import "./Notice.css";
 gsap.registerPlugin(ScrollTrigger);
 
 export const NoticePage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+
     const [notices, setNotices] = useState<Notice[]>();
     const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string>("");
+    const [copied, setCopied] = useState(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -27,6 +32,10 @@ export const NoticePage: React.FC = () => {
             try {
                 const data = await GetNotices();
                 setNotices(data);
+                if (id) {
+                    const target = data.find((n: Notice) => n._id === id);
+                    if (target) setSelectedNotice(target);
+                }
             } catch (error) {
                 console.error(error);
                 setError("не удалось загрузить заметки.");
@@ -35,7 +44,23 @@ export const NoticePage: React.FC = () => {
             }
         };
         fetchNotices();
-    }, []);
+    }, [id]);
+
+    const openNotice = (n: Notice) => {
+        setSelectedNotice(n);
+        navigate(`/notes/${n._id}`, { replace: true });
+    };
+
+    const closeNotice = () => {
+        setSelectedNotice(null);
+        navigate("/notes", { replace: true });
+    };
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(window.location.origin + `/notes/${selectedNotice?._id}`);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     useEffect(() => {
         if (isLoading || !notices) return;
@@ -116,7 +141,7 @@ export const NoticePage: React.FC = () => {
                                     <div key={index} className="notice-item">
                                         <button
                                             className="notice-button"
-                                            onClick={() => setSelectedNotice(n)}
+                                            onClick={() => openNotice(n)}
                                         >
                                             <video
                                                 className="notice-video-hover"
@@ -148,7 +173,7 @@ export const NoticePage: React.FC = () => {
                 <div
                     className="reading-overlay"
                     ref={overlayRef}
-                    onClick={() => setSelectedNotice(null)}
+                    onClick={closeNotice}
                     data-lenis-prevent
                 >
                     {/* Themed Scroll Progress for the popup */}
@@ -167,10 +192,17 @@ export const NoticePage: React.FC = () => {
                             className="article-body"
                             dangerouslySetInnerHTML={{ __html: selectedNotice.text_html }}
                         />
-                        <div style={{ marginTop: '8rem', textAlign: 'center' }}>
+                        <div style={{ marginTop: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
                             <button
                                 className="close-text-btn"
-                                onClick={() => setSelectedNotice(null)}
+                                onClick={copyLink}
+                                style={{ opacity: 0.6, fontSize: '0.85rem', letterSpacing: '0.15em' }}
+                            >
+                                {copied ? "ссылка скопирована ✓" : "скопировать ссылку / share"}
+                            </button>
+                            <button
+                                className="close-text-btn"
+                                onClick={closeNotice}
                             >
                                 вернуться к журналу / back
                             </button>

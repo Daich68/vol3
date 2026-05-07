@@ -25,6 +25,7 @@ function AppContent() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/notes" element={<NoticePage />} />
+                <Route path="/notes/:id" element={<NoticePage />} />
                 <Route path="/search" element={<Search />} />
                 <Route
                     path="/person"

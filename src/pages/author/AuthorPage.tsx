@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { GetAuthorByID, GetPostsByAuthorID, GetDictByAuthorID, SaveDict } from "../../requests/Api";
 import { Loader } from "../../components/Loader/Loader";
 import { DictModal } from "./DictModal";
@@ -12,6 +12,7 @@ import useSound from "use-sound";
 import buttonSound from "../../static/sound/button.wav";
 import { DisplayGifWithMean } from "./Gifs";
 import { safeLocalStorage } from "../../utils/localStorage";
+import { useLoader } from "../../contexts/LoaderContext";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,6 +22,8 @@ gsap.registerPlugin(ScrollTrigger);
 export const AuthorPage: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const { isLoaded } = useLoader();
     const [author, setAuthor] = useState<Author>();
     const [userID, setUserID] = useState<string>();
     const [posts, setPosts] = useState<Post[]>([]);
@@ -33,6 +36,7 @@ export const AuthorPage: React.FC = () => {
     const [isDictLoaded, setIsDictLoaded] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
     const [canWrite, setCanWrite] = useState<boolean>(true);
+    const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -146,6 +150,25 @@ export const AuthorPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [isLoading, author, posts.length]);
 
+    useEffect(() => {
+        const postId = searchParams.get("post");
+        if (!postId || posts.length === 0 || !isLoaded) return;
+        const el = document.getElementById(`post-${postId}`);
+        if (el) {
+            setTimeout(() => {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("post-card--highlighted");
+                setTimeout(() => el.classList.remove("post-card--highlighted"), 2500);
+            }, 400);
+        }
+    }, [posts, searchParams, isLoaded]);
+
+    const copyPostLink = (postId: string) => {
+        navigator.clipboard.writeText(`${window.location.origin}/author/${id}?post=${postId}`);
+        setCopiedPostId(postId);
+        setTimeout(() => setCopiedPostId(null), 2000);
+    };
+
     const logout = () => {
         safeLocalStorage.clear();
         navigate("/login");
@@ -247,7 +270,7 @@ export const AuthorPage: React.FC = () => {
                                 </div>
                             ) : (
                                 posts.map((post, index) => (
-                                    <article key={post._id} className="post-card">
+                                    <article key={post._id} id={`post-${post._id}`} className="post-card">
                                         <div className="post-archive-number">
                                             #{String(posts.length - index).padStart(3, '0')}
                                         </div>
@@ -257,6 +280,12 @@ export const AuthorPage: React.FC = () => {
                                                 <time className="post-time" dateTime={new Date(post.time_publication).toISOString()}>
                                                     {GetPrettyTimePub({ date: new Date(post.time_publication) })}
                                                 </time>
+                                                <button
+                                                    className="post-share-btn"
+                                                    onClick={() => copyPostLink(post._id)}
+                                                >
+                                                    {copiedPostId === post._id ? "скопировано ✓" : "поделиться"}
+                                                </button>
                                             </div>
                                         </div>
                                         <div className="post-card-border" />
