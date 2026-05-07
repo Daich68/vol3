@@ -282,7 +282,7 @@ export const AuthorPage: React.FC = () => {
                                                 </time>
                                                 <button
                                                     className="post-share-btn"
-                                                    onClick={() => copyPostLink(post._id)}
+                                                    onClick={() => post._id && copyPostLink(post._id)}
                                                 >
                                                     {copiedPostId === post._id ? "скопировано ✓" : "поделиться"}
                                                 </button>
