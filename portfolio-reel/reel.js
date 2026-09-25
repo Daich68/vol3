@@ -701,8 +701,8 @@
       });
     });
 
-    tl.fromTo(".lang-title", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "power1.inOut" }, 24.02);
-    cue(24.02, "scribble", 0.7);
+    tl.fromTo(".lang-title", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "power1.inOut" }, 23.85);
+    cue(23.85, "scribble", 0.7);
     tl.from(".lang-sub i", { scaleX: 0, duration: 0.9 }, 24.4);
     tl.from(".lang-sub span", { opacity: 0, duration: 0.01, stagger: 0.12 }, 24.4);
     scramble(".lang-sub span", 24.4, 0.6, { chars: "АБВГДЕЖЗИКЛМН", stagger: 0.12 });
@@ -825,6 +825,11 @@
     tl.from(".end-credit i", { scaleX: 0, duration: 1.0 }, 31.35);
     tl.from(".end-credit span", { opacity: 0, duration: 0.01, stagger: 0.15 }, 31.35);
     scramble(".end-credit span", 31.35, 0.7, { stagger: 0.15 });
+    // An impulse runs round the ring, like current through the electric tree.
+    tl.fromTo(".end-impulse", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 31.3);
+    tl.fromTo(".end-impulse", { rotation: -30 }, { rotation: 690, duration: 2.7, ease: "power2.inOut", immediateRender: false }, 31.3);
+    tl.to(".end-impulse", { opacity: 0, duration: 0.35, ease: "none" }, 33.65);
+    cue(31.3, "whoosh-soft", 0.35);
     [32.0, 33.0].forEach((t) => {
       tl.to(".end-logo", { keyframes: { x: [0, -12, 9, -3, 0], opacity: [1, 0.55, 1, 0.8, 1] }, duration: 0.14, ease: "none" }, t);
       cue(t, "glitch", 0.4);

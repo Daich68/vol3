@@ -4,7 +4,8 @@
 интерфейса [vol-3.web-almanac.com](https://vol-3.web-almanac.com/) в формате
 Reels для портфолио/резюме дизайнера.
 
-**Готовый файл:** [`out/vol3-reel.mp4`](out/vol3-reel.mp4)
+**Готовый файл:** [`out/vol3-reel.mp4`](out/vol3-reel.mp4) · обложки:
+[`out/cover-hero.jpg`](out/cover-hero.jpg), [`out/cover-end.jpg`](out/cover-end.jpg)
 
 Всё собрано из этого репозитория: шрифты (Entropia, DeltaBlock, Babayka),
 пиксельный логотип, `circle.svg`, `scroll.svg`, ветки `01.png`, видео дерева,
@@ -88,6 +89,7 @@ node portfolio-reel/scripts/build-sprites.mjs
 
 ## Для Instagram
 
-Загружать как Reels без кадрирования. Громкость сведена к −14 LUFS. Хорошие
-кадры для обложки: 0:03 (WEB-ALMANAC в рамке), 0:08 (карточки 01/∞/00),
-0:22 (разобранные слои), 0:32 (финальная карточка).
+Загружать как Reels без кадрирования. Громкость сведена к −14 LUFS. Обложку
+можно взять из `out/cover-*.jpg`; ещё хорошие кадры: 0:08 (карточки 01/∞/00)
+и 0:22 (разобранные слои). Нижние ~15% кадра в Reels перекрывает подпись —
+ключевой контент держится выше, внизу только HUD.
