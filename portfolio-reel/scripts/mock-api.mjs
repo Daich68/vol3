@@ -29,7 +29,7 @@ const demoAuthors = [
   { _id: "a0000000000000000000a7b9", login: "morozno" },
 ];
 
-const HERO_AUTHOR = demoAuthors[0];
+export const HERO_AUTHOR = demoAuthors[0];
 // The account that is "logged in" while filming the dictionary scene.
 export const ME = demoAuthors[4];
 
@@ -149,3 +149,10 @@ export function createApi() {
 }
 
 export const usingRealData = () => fs.existsSync(realData);
+
+// For capture-screens.mjs (GET only, one shared copy of the data).
+const shared = createApi();
+export function mockResponse(urlString) {
+  const r = shared.handle("GET", urlString);
+  return r ? r.body : null;
+}

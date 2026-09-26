@@ -151,5 +151,24 @@
       syncGifs();
       await syncVideos();
     },
+    // Before a frame is filmed: React renders on real time (MessageChannel),
+    // so give it a couple of real frames to commit what this virtual frame
+    // scheduled, wait for images it just created to decode (the GIF sprite
+    // strips), then pin anything new to the clock.
+    async idle() {
+      await realFrame();
+      await new Promise((r) => realSetTimeout(r, 0));
+      await realFrame();
+      const pending = [...document.images].filter((i) => i.getAttribute("src") && (!i.complete || !i.naturalWidth));
+      if (pending.length) {
+        await Promise.race([
+          Promise.all(pending.map((i) => i.decode().catch(() => {}))),
+          new Promise((r) => realSetTimeout(r, 500)),
+        ]);
+      }
+      syncAnimations();
+      syncGifs();
+      await syncVideos();
+    },
   };
 })();

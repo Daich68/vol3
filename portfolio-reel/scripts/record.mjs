@@ -100,6 +100,7 @@ class Recorder {
     const keep = (!DRY || this.frames.length % 12 === 0) && (!RANGE || this.frames.length >= RANGE.a);
     for (let s = 0; s < this.subframes; s++) {
       await this.advance(1000 / (FPS * this.subframes));
+      await this.page.evaluate(() => window.__vt.idle());
       if (!keep || (DRY && s > 0)) continue;
       const shot = await this.cdp.send("Page.captureScreenshot", {
         format: "jpeg", quality: DRY ? 70 : 92, optimizeForSpeed: true,
@@ -108,10 +109,7 @@ class Recorder {
       shots.push(Buffer.from(shot.data, "base64"));
     }
     if (!shots.length) {
-      // Nothing filmed for this frame. React schedules its work on real time,
-      // so give it a moment, as filming would, or state changes (a refetch
-      // after publishing) land later on the virtual clock than in a full run.
-      await wait(40);
+      // nothing filmed for this frame (a dry run, or before --frames)
     } else if (this.encoder) {
       for (const b of shots) {
         if (!this.encoder.stdin.write(b)) await new Promise((r) => this.encoder.stdin.once("drain", r));
@@ -397,9 +395,15 @@ const media = prepareMedia();
 const { chromium } = await loadPlaywright();
 const { server, url: base } = await serve(buildDir, { spa: true });
 // One browser per worker: contexts of a single browser share its GPU process,
-// which serialises the screenshots.
+// which serialises the screenshots. The compositor flags make every frame
+// wait for its raster and image decodes: without them a screenshot can catch
+// a layer (a tooltip, the scrollbar, a button) before it is drawn.
 const launch = () => chromium.launch({
-  args: ["--disable-smooth-scrolling", "--force-color-profile=srgb", "--hide-scrollbars", "--disable-lcd-text", "--font-render-hinting=none", "--autoplay-policy=no-user-gesture-required"],
+  args: [
+    "--disable-smooth-scrolling", "--force-color-profile=srgb", "--hide-scrollbars", "--disable-lcd-text",
+    "--font-render-hinting=none", "--autoplay-policy=no-user-gesture-required",
+    "--run-all-compositor-stages-before-draw", "--disable-checker-imaging",
+  ],
 });
 console.log(`recording ${names.join(", ")}${usingRealData() ? " (real API data)" : " (demo data)"}`);
 try {

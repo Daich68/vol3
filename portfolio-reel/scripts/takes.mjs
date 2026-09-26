@@ -81,6 +81,34 @@ export const TAKES = {
     },
   },
 
+  // Mobile: the notes — scroll to the list, open a note (the one by Данила
+  // Кудимов when real data is loaded) and read it to the end.
+  "m-notes": {
+    device: "mobile",
+    css: ".reading-overlay { backdrop-filter: none !important; }", // see d-notes
+    track: {
+      note: ".notice-item .notice-button",
+      readingIndicator: ".reading-sidebar .custom-scroll-indicator",
+    },
+    async run(r) {
+      await r.goto("/notes", { preroll: 5.2 });
+      await r.hold(0.6);
+      await r.wheel(720, 1.1, { x: 216, y: 560 });
+      await r.hold(0.6);
+      const n = await r.page.evaluate(() => {
+        const items = [...document.querySelectorAll(".notice-item")];
+        const i = items.findIndex((el) => /кудимов/i.test(el.textContent));
+        return i < 0 ? 1 : i + 1;
+      });
+      r.trackSelectors.note = `${$nth(".notice-item", n)} .notice-button`;
+      await r.tap(r.trackSelectors.note, { hold: 0.2 });
+      await r.hold(1.2);
+      await r.moveTo(216, 600, 0.1);
+      await r.scrollEl(".reading-overlay", "end", 3.2);
+      await r.hold(0.6);
+    },
+  },
+
   // Mobile: the personal dictionary — give three glyphs a meaning, save, write
   // a post with one of them, publish, and tap it to read the meaning back.
   "m-dict": {

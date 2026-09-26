@@ -1,14 +1,33 @@
 /* ==========================================================================
    VOL-3 / WEB-ALMANAC — portfolio reel (1080x1920, 9:16)
-   The picture is the real app, recorded by scripts/record.mjs; this file only
-   frames it. Black and white, like the project.
+   Every visual value here is borrowed from the app's own CSS: the landing
+   page is laid out exactly as the site renders on a phone (432×768 at 2.5x,
+   which is this stage), and the rest is the real app filmed by record.mjs.
+   Black and white, like the project.
    ========================================================================== */
 
 @font-face { font-family: "Entropia"; src: url("../src/static/fonts/Entropia-Light.otf"); }
+@font-face { font-family: "EntropiaBack"; src: url("../src/static/fonts/Entropia-Light-Backslant.otf"); }
+@font-face { font-family: "EntropiaItalic"; src: url("../src/static/fonts/Entropia-Light-Italic.otf"); }
+@font-face { font-family: "DeltaBlock"; src: url("../src/static/fonts/DeltaBlock-Regular.ttf"); }
+@font-face { font-family: "Babayka"; src: url("../src/static/fonts/babayka_font.ttf"); }
+
+:root {
+  --ink: #111111;
+  --ink-2: #1a1a1a;
+  --paper: #ffffff;
+  --fog: #dcdcdc;
+  --line: #767676;
+  --mono: "DejaVu Sans Mono", "Menlo", "Consolas", monospace;
+}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body { background: #151515; overflow: hidden; }
+html, body {
+  background: #1b1b1b;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
 #viewport {
   position: fixed;
@@ -24,109 +43,13 @@ html, body { background: #151515; overflow: hidden; }
   height: 1920px;
   flex: none;
   overflow: hidden;
-  background: #fff;
+  background: var(--paper);
+  color: var(--ink);
   font-family: "Entropia", serif;
   transform-origin: 50% 50%;
 }
 
-/* ---------- recorded shots ---------- */
-#shots { position: absolute; inset: 0; }
-.shot {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  display: none;
-  background: #fff;
-}
-/* Desktop takes float as a screen when the camera pulls back past them. */
-.shot.desktop { background: #f0f0f0; }
-.shot img {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform-origin: 0 0;
-}
-.shot.desktop img {
-  border-radius: 14px;
-  box-shadow: 0 50px 150px rgba(0, 0, 0, 0.14), 0 0 0 2px rgba(0, 0, 0, 0.05);
-}
-
-/* ---------- cursor & finger ---------- */
-/* #pointer / #touch are templates; each shot draws its own copy. */
-#pointer, #touch { display: none; }
-.ptr, .tch {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  display: none;
-  z-index: 20;
-  transform-origin: 0 0;
-}
-.ptr svg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 24px;
-  height: 36px;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
-}
-.ptr .p-hand { left: -9px; top: -1px; width: 32px; height: 36px; display: none; }
-.ptr.hand .p-arrow { display: none; }
-.ptr.hand .p-hand { display: block; }
-.tch .t-dot, .tch .t-ring {
-  position: absolute;
-  left: -50px;
-  top: -50px;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-.tch .t-dot {
-  background: rgba(17, 17, 17, 0.14);
-  border: 2px solid rgba(17, 17, 17, 0.3);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-.tch .t-ring { border: 2px solid rgba(17, 17, 17, 0.4); opacity: 0; }
-
-/* ---------- end card ---------- */
-#end {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  display: none;
-  z-index: 30;
-}
-/* Kept clear of the Reels overlays: the caption along the bottom and the
-   like/comment/share column on the right. */
-#end .end-logo {
-  position: absolute;
-  left: 50%;
-  top: 360px;
-  width: 600px;
-  margin-left: -300px;
-}
-#end .end-qrs {
-  position: absolute;
-  left: 130px;
-  right: 130px;
-  top: 820px;
-  display: flex;
-  justify-content: space-between;
-}
-#end .qr { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-/* the codes carry their own quiet zone, so no border is needed */
-#end .qr-code { width: 380px; height: 380px; background: #fff; }
-#end .qr-code svg { width: 100%; height: 100%; display: block; }
-#end figcaption {
-  font-size: 36px;
-  letter-spacing: 0.02em;
-  color: #111;
-}
-
-/* ---------- preview player (hidden when rendering) ---------- */
+/* preview player (hidden when rendering) */
 body:not(.render) #viewport { bottom: 52px; }
 #controls {
   position: fixed;
@@ -140,7 +63,7 @@ body:not(.render) #viewport { bottom: 52px; }
   padding: 0 18px;
   background: #0d0d0d;
   color: #bbb;
-  font: 13px/1 Menlo, "DejaVu Sans Mono", monospace;
+  font: 13px/1 "DejaVu Sans Mono", Menlo, monospace;
   z-index: 10;
 }
 #controls input { flex: 1; accent-color: #fff; }
@@ -153,6 +76,596 @@ body:not(.render) #viewport { bottom: 52px; }
   font: inherit;
   cursor: pointer;
 }
+
 body.render #viewport { position: static; display: block; }
 body.render #stage { transform: none !important; }
 body.render #controls { display: none; }
+
+.layer, .scene {
+  position: absolute;
+  inset: 0;
+}
+
+.scene { display: none; overflow: hidden; }
+
+.mono {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* ---------- stacking ---------- */
+#liquid { z-index: 0; }
+#camera { transform-origin: 50% 50%; isolation: isolate; z-index: 1; }
+
+#mf-back { z-index: 5; display: none; }
+#s02 { z-index: 10; }
+#s03 { z-index: 11; }
+#s04 { z-index: 12; }
+#mf-front { z-index: 15; display: none; }
+#s04b { z-index: 18; }
+#s02b { z-index: 20; }
+#s05 { z-index: 40; }
+#s01 { z-index: 50; }
+#s06 { z-index: 60; }
+#s07 { z-index: 70; }
+#s08 { z-index: 80; }
+
+/* ---------- liquid background (LiquidBackground.tsx) ---------- */
+#liquid {
+  background: var(--fog);
+  display: none;
+}
+/* Soft radial gradients instead of blur(80px) blobs: same look, a fraction
+   of the rendering cost. */
+#liquid .blobs { position: absolute; inset: -200px; }
+#liquid .blob { position: absolute; border-radius: 50%; }
+#liquid .b1 { width: 1150px; height: 1150px; background: radial-gradient(closest-side, rgba(176, 176, 176, 0.72), rgba(176, 176, 176, 0.42) 45%, rgba(176, 176, 176, 0)); }
+#liquid .b2 { width: 1000px; height: 1000px; background: radial-gradient(closest-side, rgba(160, 160, 160, 0.66), rgba(160, 160, 160, 0.38) 45%, rgba(160, 160, 160, 0)); }
+#liquid .b3 { width: 850px; height: 850px; background: radial-gradient(closest-side, rgba(150, 150, 150, 0.6), rgba(150, 150, 150, 0.32) 45%, rgba(150, 150, 150, 0)); }
+#liquid .b4 { width: 760px; height: 760px; background: radial-gradient(closest-side, rgba(250, 250, 250, 0.95), rgba(250, 250, 250, 0.5) 45%, rgba(250, 250, 250, 0)); }
+
+/* ---------- a finger on the glass ---------- */
+.touch { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; display: none; z-index: 30; }
+.touch .t-dot, .touch .t-ring {
+  position: absolute;
+  left: -50px;
+  top: -50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.touch .t-dot {
+  background: rgba(17, 17, 17, 0.14);
+  border: 2px solid rgba(17, 17, 17, 0.32);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.touch .t-ring { border: 3px solid rgba(17, 17, 17, 0.45); opacity: 0; }
+
+/* ==========================================================================
+   S01 — PRELOADER
+   ========================================================================== */
+.boot-panel {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  overflow: hidden;
+}
+.boot-hatch {
+  position: absolute;
+  inset: -50%;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.035) 0%, transparent 50%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.028) 0px, rgba(0, 0, 0, 0.028) 1.5px, transparent 1.5px, transparent 22px);
+  transform: rotate(5deg);
+}
+.boot-ring {
+  position: absolute;
+  left: 50%;
+  top: 880px;
+  width: 960px;
+  height: 1720px;
+  margin-left: -480px;
+  margin-top: -860px;
+}
+.boot-ring img, .end-ring img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.boot-ring .ring-base, .end-ring .ring-base { filter: brightness(0); opacity: 0.07; }
+.boot-ring .ring-fill, .end-ring .ring-fill {
+  filter: brightness(0);
+  opacity: 0.85;
+  -webkit-mask-image: conic-gradient(from 0deg at 50% 50%, #000 var(--fill, 0deg), transparent 0deg);
+  mask-image: conic-gradient(from 0deg at 50% 50%, #000 var(--fill, 0deg), transparent 0deg);
+}
+.boot-logo {
+  position: absolute;
+  left: 50%;
+  top: 880px;
+  width: 600px;
+  height: 327px;
+  margin-left: -300px;
+  margin-top: -163px;
+}
+.boot-logo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.boot-particles { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+.boot-counter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1450px;
+  text-align: center;
+  font-family: "DeltaBlock", sans-serif;
+  font-size: 230px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #000;
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+}
+.boot-meta {
+  position: absolute;
+  left: 108px;
+  bottom: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 22px;
+  border-left: 2px solid rgba(0, 0, 0, 0.2);
+  font-size: 22px;
+  color: #333;
+}
+
+/* ==========================================================================
+   The phone's page frame (PageFrame.css at 2.5x): 13px of grey, a 1px line,
+   the frosted band, a 1px line, then the page.
+   ========================================================================== */
+#mf-back { background: var(--fog); }
+.mf-glass { position: absolute; inset: 15px; background: #eeeeee; }
+.mf-edge { position: absolute; background: var(--line); }
+.mf-edge.t, .mf-edge.b { height: 2px; left: 13px; right: 13px; }
+.mf-edge.l, .mf-edge.r { width: 2px; top: 13px; bottom: 13px; }
+.mf-edge.t { top: 13px; transform-origin: 0 50%; }
+.mf-edge.b { bottom: 13px; transform-origin: 100% 50%; }
+.mf-edge.l { left: 13px; transform-origin: 50% 100%; }
+.mf-edge.r { right: 13px; transform-origin: 50% 0; }
+.mf-inner {
+  position: absolute;
+  inset: 26px;
+  border: 2px solid var(--line);
+  background: var(--paper);
+}
+/* the content of each landing-page scene sits inside the page */
+.page { position: absolute; inset: 28px; overflow: hidden; }
+
+.mf-square {
+  position: absolute;
+  left: 68px;
+  top: 68px;
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(0, 0, 0, 0.22);
+}
+/* ScrollProgress on a phone: a 60px strip at the right edge of the page */
+.mscroll {
+  position: absolute;
+  top: 28px;
+  bottom: 28px;
+  right: 28px;
+  width: 150px;
+}
+.mscroll .tree { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.1; filter: grayscale(1); }
+.node {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 5px 12px rgba(0, 0, 0, 0.05), inset 0 0 0 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Entropia", serif;
+  font-size: 27px;
+  color: #111;
+}
+.node svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.node-num { position: relative; }
+.tg {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  width: 84px;
+  height: 84px;
+  margin-left: -42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(0, 0, 0, 0.05);
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tg svg { width: 40px; height: 40px; }
+
+/* ==========================================================================
+   S02 — HERO (About.tsx, ≤600px)
+   ========================================================================== */
+.hero-ghost {
+  position: absolute;
+  left: 50%;
+  top: 907px;
+  width: 1040px;
+  height: 567px;
+  margin-left: -520px;
+  margin-top: -283px;
+}
+.hero-ghost img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-ghost .g-base { filter: brightness(0); opacity: 0.03; }
+.hero-ghost .g-fill { filter: brightness(0); opacity: 0.05; clip-path: inset(100% 0 0 0); }
+/* font-size 4rem, 900, -0.05em, line-height 1.1, 1px stroke */
+.hero-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 808px;
+  height: 176px;
+  text-align: center;
+  font-weight: 900;
+  font-size: 160px;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-text-stroke: 2.5px rgba(0, 0, 0, 0.1);
+}
+.hero-title .ln { display: inline-block; }
+/* 1.1rem, 500, #333 */
+.hero-sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1106px;
+  text-align: center;
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   S02b — the scrollbar, filmed on the desktop site
+   ========================================================================== */
+#s02b { background: #f0f0f0; }
+.shot { position: absolute; inset: 0; overflow: hidden; }
+.shot img { position: absolute; left: 0; top: 0; transform-origin: 0 0; filter: grayscale(1); }
+
+/* ==========================================================================
+   S03 — RULES (About.tsx .features-grid on a phone)
+   ========================================================================== */
+.rules { position: absolute; inset: 0; perspective: 1800px; }
+.rule {
+  position: absolute;
+  left: 62px;
+  width: 900px;
+  height: 352px;
+  border-radius: 75px;
+  background: #fff;
+  border: 5px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 25px 75px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+}
+.rule.r1 { top: 397px; }
+.rule.r2 { top: 807px; }
+.rule.r3 { top: 1224px; }
+/* the sequencer hit inverts the card */
+.rule .flash { position: absolute; inset: 0; background: #fff; mix-blend-mode: difference; opacity: 0; z-index: 2; }
+.rule .num, .rule .inf, .rule .lbl { position: relative; }
+/* feature-number: 2rem, 900 */
+.rule .num {
+  font-weight: 900;
+  font-size: 80px;
+  line-height: 1;
+  height: 80px;
+  color: #000;
+  display: flex;
+}
+.rule .odo { display: inline-block; height: 80px; overflow: hidden; }
+.rule .odo-col { display: flex; flex-direction: column; }
+.rule .odo-col span { height: 80px; display: block; }
+.rule .inf { width: 60px; height: 80px; overflow: visible; }
+.rule .inf path { fill: none; stroke: #000; stroke-width: 34; stroke-linecap: round; stroke-linejoin: round; }
+/* feature-label: 0.8rem, #888, 0.3em, 700 */
+.rule .lbl { font-size: 32px; letter-spacing: 0.3em; color: #888; font-weight: 700; text-transform: uppercase; margin-right: -0.3em; }
+
+/* ==========================================================================
+   S04 — NAVIGATION (TreeNavigation.css, mobile)
+   ========================================================================== */
+.nav-divider {
+  position: absolute;
+  top: 160px;
+  left: 62px;
+  right: 62px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.nav-divider i { flex: 1; height: 2px; background: #e0e0e0; }
+.nav-divider i:first-child { transform-origin: 100% 50%; }
+.nav-divider i:last-child { transform-origin: 0 50%; }
+.nav-divider span {
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: #222;
+  margin-right: -0.6em;
+}
+.nav-card {
+  position: absolute;
+  left: 100px;
+  width: 824px;
+  height: 200px;
+  border-radius: 30px;
+  background: #fff;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.nav-card[data-id="notes"] { top: 361px; }
+.nav-card[data-id="search"] { top: 599px; }
+.nav-card[data-id="philosophy"] { top: 839px; }
+.nav-card[data-id="person"] { top: 1076px; }
+.nav-card[data-id="login"] { top: 1316px; height: 262px; }
+.nav-card .pat { position: absolute; inset: 0; z-index: -2; }
+.nav-card .lbl { position: relative; font-size: 52px; line-height: 1; color: #333; }
+.nav-card .desc { position: relative; font-size: 36px; color: rgba(0, 0, 0, 0.6); }
+/* the branch video, visible on phones at 0.6 */
+.nav-card .vid, .nav-expand .vid {
+  position: absolute;
+  background: url("assets/sprites/tree-video.jpg") 0 0 / 800% 600% no-repeat;
+  filter: grayscale(1) contrast(1.15);
+  pointer-events: none;
+}
+/* the sprite is light-on-dark; on a phone the video reads dark-on-light */
+.nav-card .vid { left: 0; right: 0; top: 50%; height: 464px; margin-top: -232px; opacity: 0.6; z-index: -1; filter: grayscale(1) invert(1) contrast(1.1); }
+.nav-card[data-id="notes"] .pat {
+  background:
+    repeating-linear-gradient(45deg, transparent, transparent 16px, rgba(0, 0, 0, 0.15) 16px, rgba(0, 0, 0, 0.15) 20px),
+    repeating-linear-gradient(-45deg, transparent, transparent 24px, rgba(0, 0, 0, 0.08) 24px, rgba(0, 0, 0, 0.08) 28px);
+  opacity: 0.12;
+}
+.nav-card[data-id="search"] .pat {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.12) 6px, transparent 6px),
+    radial-gradient(circle at 60% 70%, rgba(0, 0, 0, 0.12) 6px, transparent 6px),
+    radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.12) 6px, transparent 6px),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.12) 6px, transparent 6px);
+  background-size: 100px 100px;
+  opacity: 0.5;
+}
+.nav-card[data-id="philosophy"] .pat {
+  background:
+    radial-gradient(circle at center, transparent 25%, rgba(0, 0, 0, 0.1) 25%, rgba(0, 0, 0, 0.1) 27%, transparent 27%),
+    radial-gradient(circle at center, transparent 45%, rgba(0, 0, 0, 0.08) 45%, rgba(0, 0, 0, 0.08) 47%, transparent 47%),
+    radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.06) 65%, rgba(0, 0, 0, 0.06) 67%, transparent 67%);
+  background-size: 140px 140px;
+  opacity: 0.4;
+}
+.nav-card[data-id="person"] .pat {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(0, 0, 0, 0.1) 25%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 0, 0, 0.08) 30%, transparent 60%);
+  background-size: 110px 110px;
+  opacity: 0.4;
+}
+.nav-card[data-id="login"] .pat {
+  background: repeating-linear-gradient(60deg, transparent, transparent 12px, rgba(0, 0, 0, 0.12) 12px, rgba(0, 0, 0, 0.12) 16px, transparent 16px, transparent 36px);
+  opacity: 0.35;
+}
+.nav-expand {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  isolation: isolate;
+  overflow: hidden;
+}
+.nav-expand .vid {
+  left: 50%;
+  top: 50%;
+  width: 2020px;
+  height: 1117px;
+  margin: -558px 0 0 -1010px;
+  mix-blend-mode: difference;
+}
+
+/* ==========================================================================
+   Phones (S05, S07): a 9:16 screen, the same shape as the filmed phone
+   ========================================================================== */
+.dev-stage { position: absolute; inset: 0; perspective: 2400px; }
+.phone {
+  position: absolute;
+  left: 230px;
+  top: 421px;
+  width: 620px;
+  height: 1078px;
+  border-radius: 72px;
+  background: #0b0b0b;
+  box-shadow: 0 70px 140px rgba(0, 0, 0, 0.32), 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 0 0 3px #2a2a2a, inset 0 0 0 7px #0b0b0b, inset 0 0 0 9px #3a3a3a;
+  transform-origin: 50% 50%;
+}
+.p-screen {
+  position: absolute;
+  inset: 16px;
+  border-radius: 56px;
+  overflow: hidden;
+  background: #fff;
+  isolation: isolate;
+}
+.p-screen .foot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; filter: grayscale(1); }
+
+/* ==========================================================================
+   S05 — the note, then the wall of screens
+   ========================================================================== */
+.wall { position: absolute; inset: 0; perspective: 2600px; display: none; }
+.wall-plane { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+.wall-col { position: absolute; width: 900px; display: flex; flex-direction: column; gap: 36px; top: -2076.75px; }
+.wall-col.c1 { left: -1386px; }
+.wall-col.c2 { left: -450px; }
+.wall-col.c3 { left: 486px; }
+.wall-col img { width: 900px; height: 562.5px; display: block; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.22); filter: grayscale(1); }
+
+/* ==========================================================================
+   S06 — ARCHITECTURE (the real hero page, exploded into its layers)
+   ========================================================================== */
+.xp-stage { position: absolute; inset: 0; perspective: 2600px; }
+.xp-tilt {
+  position: absolute;
+  left: 0;
+  top: 622.5px;
+  width: 1080px;
+  height: 675px;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+}
+.xp-plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+}
+.xp-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  outline: 3px solid rgba(0, 0, 0, 0);
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: 0 50px 90px rgba(0, 0, 0, 0);
+  filter: grayscale(1);
+}
+
+/* ==========================================================================
+   S07 — THE PERSONAL DICTIONARY
+   ========================================================================== */
+#s07 { background: #fff; }
+.lang-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 150px;
+  text-align: center;
+  font-family: "Babayka", serif;
+  font-size: 150px;
+  line-height: 1.1;
+  color: #111;
+  white-space: nowrap;
+}
+.glyphs {
+  position: absolute;
+  left: 90px;
+  top: 470px;
+  width: 900px;
+  display: grid;
+  grid-template-columns: repeat(4, 210px);
+  gap: 20px;
+}
+.glyph {
+  position: relative;
+  height: 250px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 16px;
+}
+.glyph .spr { position: relative; width: 168px; height: 168px; display: block; background-repeat: no-repeat; }
+.glyph span { position: relative; font-family: var(--mono); font-size: 15px; color: #999; letter-spacing: 0.04em; margin-top: 18px; }
+.glyph .sel { position: absolute; inset: -2px; background: #111; opacity: 0; }
+.glyph.on .spr { filter: invert(1); }
+.glyph.on span { color: #fff; }
+#phone-dict { left: 170px; top: 297px; width: 740px; height: 1326px; border-radius: 86px; }
+#phone-dict .p-screen { border-radius: 68px; }
+.lang-white { position: absolute; inset: 0; background: #fff; display: none; }
+
+/* ==========================================================================
+   S08 — END CARD
+   ========================================================================== */
+#s08 { background: #fff; }
+.end-ring {
+  position: absolute;
+  left: 50%;
+  top: 560px;
+  width: 720px;
+  height: 1290px;
+  margin-left: -360px;
+  margin-top: -645px;
+}
+.end-particles { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+/* an "electric impulse" orbiting the branch ring */
+.end-impulse {
+  position: absolute;
+  left: 50%;
+  top: 560px;
+  width: 750px;
+  height: 750px;
+  margin: -375px 0 0 -375px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(17, 17, 17, 0) 0deg, rgba(17, 17, 17, 0) 200deg, rgba(17, 17, 17, 0.55) 352deg, rgba(17, 17, 17, 0) 360deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 0, transparent 367px, #000 369px, #000 373px, transparent 375px);
+  mask-image: radial-gradient(circle, transparent 0, transparent 367px, #000 369px, #000 373px, transparent 375px);
+  opacity: 0;
+}
+.end-impulse i {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  margin: -6px 0 0 -9px;
+  border-radius: 50%;
+  background: #111;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6px rgba(17, 17, 17, 0.25);
+}
+.end-logo { position: absolute; left: 290px; top: 423px; width: 500px; height: 273px; }
+.end-logo img { width: 100%; height: 100%; display: block; }
+/* kept clear of the Reels overlays: the caption along the bottom and the
+   like/comment/share column on the right */
+.end-qrs {
+  position: absolute;
+  left: 150px;
+  right: 150px;
+  top: 1010px;
+  display: flex;
+  justify-content: space-between;
+}
+.qr { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.qr-code { width: 360px; height: 360px; background: #fff; }
+.qr-code svg { width: 100%; height: 100%; display: block; }
+.qr figcaption { font-size: 34px; letter-spacing: 0.02em; color: #111; }

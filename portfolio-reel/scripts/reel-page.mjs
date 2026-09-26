@@ -29,7 +29,7 @@ export async function openReel({ format = "png", quality = 92, query = "" } = {}
 
   async function frameAt(t, frame) {
     await page.evaluate(async ([t, frame]) => {
-      await window.__reel.seek(t, frame);
+      await window.__reel.seek(t, frame); // waits for footage frames to decode
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     }, [t, frame]);
     const shot = await cdp.send("Page.captureScreenshot", {

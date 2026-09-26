@@ -10,7 +10,7 @@
 //   --workers <n>       parallel browsers (default: CPU count - 1, max 4)
 //   --from/--to <sec>   render a slice (handy while iterating)
 //   --crf <n>           x264 quality (default 18)
-//   --grain <n>         film grain strength (default 0 = off)
+//   --grain <n>         film grain strength (default 4, 0 = off)
 //   --no-audio          skip the soundtrack
 //
 // Needs ffmpeg with libx264 on PATH (or FFMPEG=/path/to/ffmpeg).
@@ -40,7 +40,7 @@ const boost = Math.max(samples, +opt("boost", 14));
 const shutter = +opt("shutter", 180);
 const workers = Math.max(1, +opt("workers", Math.min(4, Math.max(1, os.cpus().length - 1))));
 const crf = opt("crf", "18");
-const grain = +opt("grain", 0); // temporal film grain strength, 0 = off
+const grain = +opt("grain", 4); // temporal film grain strength, 0 = off
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "vol3-reel-"));
 fs.mkdirSync(path.dirname(out), { recursive: true });
 
