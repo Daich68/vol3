@@ -1,1 +1,4 @@
 out/stills/
+.cache/
+# real API data from scripts/fetch-api.mjs
+data/

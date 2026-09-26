@@ -28,10 +28,10 @@ export async function openReel({ format = "png", quality = 92, query = "" } = {}
   const cdp = await page.context().newCDPSession(page);
 
   async function frameAt(t, frame) {
-    await page.evaluate(([t, frame]) => new Promise((resolve) => {
-      window.__reel.seek(t, frame);
-      requestAnimationFrame(() => requestAnimationFrame(resolve));
-    }), [t, frame]);
+    await page.evaluate(async ([t, frame]) => {
+      await window.__reel.seek(t, frame);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }, [t, frame]);
     const shot = await cdp.send("Page.captureScreenshot", {
       format,
       ...(format === "jpeg" ? { quality } : {}),

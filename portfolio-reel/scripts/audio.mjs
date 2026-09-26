@@ -277,6 +277,18 @@ const SFX = {
     }
     return out;
   },
+  // A soft keyboard tick; `seed` varies it so typing doesn't machine-gun.
+  key(o) {
+    const r = mulberry32(111 + (o.seed | 0));
+    const n = secs(0.05);
+    const out = svf(noise(n, 113 + (o.seed | 0)), 2400 + r() * 2200, 1.5);
+    const f = 1500 + r() * 1100;
+    for (let i = 0; i < n; i++) {
+      const t = i / SR;
+      out[i] = out[i] * Math.exp(-t / 0.005) * 1.3 + Math.sin(TAU * f * t) * Math.exp(-t / 0.008) * 0.2;
+    }
+    return out;
+  },
   decode() {
     const r = mulberry32(101);
     const n = secs(0.66), out = new Float32Array(n);
@@ -296,7 +308,7 @@ const SFX = {
 const LEVEL = {
   tick: 0.22, blip: 0.3, pop: 0.35, whoosh: 0.55, "whoosh-soft": 0.42, swipe: 0.35, suck: 0.5,
   riser: 0.5, impact: 0.95, "impact-soft": 0.6, thump: 0.65, glitch: 0.2, swarm: 0.42, hover: 0.22,
-  click: 0.9, tap: 0.4, select: 0.3, scribble: 0.28, decode: 0.18,
+  click: 0.9, tap: 0.4, select: 0.3, scribble: 0.28, decode: 0.18, key: 0.2,
 };
 const PAN = { whoosh: 0.25, "whoosh-soft": -0.2, swipe: 0.3, suck: -0.25, glitch: 0.15, blip: 0.1, pop: -0.1, tick: 0.1 };
 

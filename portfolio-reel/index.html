@@ -10,255 +10,28 @@
 <div id="viewport">
   <div id="stage">
 
-    <div id="liquid" class="layer">
-      <div class="blobs">
-        <div class="blob b1"></div>
-        <div class="blob b2"></div>
-        <div class="blob b3"></div>
-        <div class="blob b4"></div>
-      </div>
-    </div>
+    <!-- Real screen recordings of the app (record.mjs → .cache/takes). -->
+    <div id="shots"></div>
 
-    <div id="camera" class="layer">
-
-      <!-- S01 · preloader ------------------------------------------------ -->
-      <section class="scene" id="s01">
-        <div class="boot-panel">
-          <div class="boot-hatch"></div>
-          <div class="boot-ring">
-            <img class="ring-base" src="../public/circle.svg" alt="">
-            <img class="ring-fill" src="../public/circle.svg" alt="">
-          </div>
-          <canvas class="boot-particles" width="1080" height="1920"></canvas>
-          <div class="boot-logo"><img src="../public/logo%20[Vectorized].svg" alt=""></div>
-          <div class="boot-counter">000</div>
-          <div class="boot-meta mono"><span>INDEX.VOL_3</span><span>LOADING_ASSETS</span></div>
-          <img class="boot-scroll" src="../public/scroll.svg" alt="">
-        </div>
-      </section>
-
-      <!-- S02 · hero in the page frame ------------------------------------ -->
-      <section class="scene" id="s02">
-        <div class="frame">
-          <div class="gap"></div>
-          <div class="edge t"></div><div class="edge r"></div><div class="edge b"></div><div class="edge l"></div>
-          <div class="inner">
-            <div class="content">
-              <div class="hero-ghost">
-                <img class="g-base" src="../public/logo%20[Vectorized].svg" alt="">
-                <img class="g-fill" src="../public/logo%20[Vectorized].svg" alt="">
-              </div>
-              <div class="hero-details mono">
-                <div class="bar"><span>INDEX.VOL_3</span><i></i><span>ALMANAC_LIVE</span></div>
-                <div class="mark m1"></div><div class="mark m2"></div><div class="mark m3"></div><div class="mark m4"></div>
-                <div class="side">PUBLIC_DOMAIN_PROJECT</div>
-              </div>
-              <h1 class="hero-title"><span class="ln">WEB-</span><span class="ln">ALMANAC</span></h1>
-              <p class="hero-sub">Проект свободного распространения е-литературы</p>
-              <div class="hero-cta"><span class="pill dark">читать</span><span class="pill">писать</span></div>
-            </div>
-            <div class="sidebar">
-              <img class="tree track" src="../public/scroll.svg" alt="">
-              <img class="tree fill" src="../public/scroll.svg" alt="">
-              <div class="node" style="top: 26%">
-                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke="rgba(0,0,0,.1)" stroke-width="6" fill="none"/><circle class="node-arc" cx="50" cy="50" r="45" stroke="#333" stroke-width="6" fill="none" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
-                <span class="node-num">00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="branch-obj tl"><img src="assets/sprites/branch-tl.png" alt=""></div>
-        <div class="branch-obj bl"><img src="assets/sprites/branch-bl.png" alt=""></div>
-      </section>
-
-      <!-- S03 · the three rules (About.tsx features) ----------------------- -->
-      <section class="scene" id="s03">
-        <div class="rules">
-          <div class="rule r1">
-            <div class="flash"></div>
-            <div class="num"><span>0</span><span class="odo"><span class="odo-col"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>0</span><span>1</span></span></span></div>
-            <div class="lbl mono">пост в день</div>
-          </div>
-          <div class="rule r2">
-            <div class="flash"></div>
-            <svg class="inf" viewBox="-230 -110 460 220"><path d=""/></svg>
-            <div class="lbl mono">слов в словаре</div>
-          </div>
-          <div class="rule r3">
-            <div class="flash"></div>
-            <div class="num scr">00</div>
-            <div class="lbl mono">редактирований</div>
-          </div>
-        </div>
-        <div class="rules-line"></div>
-      </section>
-
-      <!-- S04 · tree navigation (TreeNavigation.tsx) ------------------------ -->
-      <section class="scene" id="s04">
-        <div class="nav-divider"><i></i><span>навигация</span><i></i></div>
-        <div class="nav-trunk"></div>
-        <div class="nav-branch lvl1" data-id="notes" style="top: 390px">
-          <i class="conn"></i>
-          <div class="nav-card"><div class="pat"></div><div class="vid"></div><div class="vid-frame"></div><div class="lbl">записи</div><div class="desc"><span>мысли и наблюдения</span></div></div>
-        </div>
-        <div class="nav-branch lvl1" data-id="search" style="top: 640px">
-          <i class="conn"></i>
-          <div class="nav-card"><div class="pat"></div><div class="lbl">поиск</div><div class="desc"><span>найти других авторов</span></div></div>
-        </div>
-        <div class="nav-branch lvl2" data-id="philosophy" style="top: 890px">
-          <i class="conn"></i>
-          <div class="nav-card"><div class="pat"></div><div class="lbl">философия</div><div class="desc"><span>о нашем проекте</span></div></div>
-        </div>
-        <div class="nav-branch lvl2" data-id="person" style="top: 1140px">
-          <i class="conn"></i>
-          <div class="nav-card"><div class="pat"></div><div class="lbl">профиль</div><div class="desc"><span>ваша страница и словарик</span></div></div>
-        </div>
-        <div class="nav-branch lvl2" data-id="login" style="top: 1390px">
-          <i class="conn"></i>
-          <div class="nav-card"><div class="pat"></div><div class="lbl">вход</div><div class="desc"><span>присоединиться к дереву</span></div></div>
-        </div>
-        <div class="nav-caption mono"><span>hover</span><i></i><span>video · mix-blend: difference</span></div>
-        <div class="nav-expand"><div class="vid"></div></div>
-      </section>
-
-      <!-- S05 · real screens: phone, browser, screen wall -------------------- -->
-      <section class="scene" id="s05">
-        <div class="dev-stage">
-          <div class="browser">
-            <div class="b-bar">
-              <i></i><i></i><i></i>
-              <div class="b-url mono"><span class="b-lock"></span><span class="b-host">vol-3.web-almanac.com</span><span class="b-path">/search</span></div>
-            </div>
-            <div class="b-screen">
-              <img class="shot" src="assets/screens/d-search.jpg" alt="">
-              <img class="shot" src="assets/screens/d-search-results.jpg" alt="">
-              <img class="shot" src="assets/screens/d-author.jpg" alt="">
-              <img class="shot" src="assets/screens/d-author-posts.jpg" alt="">
-            </div>
-          </div>
-          <div class="phone">
-            <div class="p-screen">
-              <img class="shot" src="assets/screens/m-notes.jpg" alt="">
-              <img class="shot" src="assets/screens/m-notes-list.jpg" alt="">
-              <img class="shot" src="assets/screens/m-notes-read.jpg" alt="">
-              <img class="shot" src="assets/screens/m-search-results.jpg" alt="">
-              <img class="shot" src="assets/screens/m-author.jpg" alt="">
-              <img class="shot" src="assets/screens/m-author-dict.jpg" alt="">
-              <div class="tap"></div>
-            </div>
-            <div class="p-island"></div>
-          </div>
-          <div class="callout mono" id="co1"><b>/notes</b><span>журнал · lenis smooth scroll</span></div>
-          <div class="callout mono right" id="co2"><b>/notes/:id</b><span>reading mode · shareable link</span></div>
-          <div class="route-chips mono"><span>/search</span><span>/author/:id</span><span>?post=</span><span>/dictionary</span></div>
-        </div>
-        <div class="wall">
-          <div class="wall-plane">
-            <div class="wall-col c1">
-              <img src="assets/screens/d-philosophy.jpg" alt=""><img src="assets/screens/d-login.jpg" alt=""><img src="assets/screens/d-notes-list.jpg" alt=""><img src="assets/screens/d-author-dict.jpg" alt=""><img src="assets/screens/d-philosophy-principles.jpg" alt=""><img src="assets/screens/d-search.jpg" alt="">
-            </div>
-            <div class="wall-col c2">
-              <img src="assets/screens/d-notes.jpg" alt=""><img src="assets/screens/d-author.jpg" alt=""><img src="assets/screens/d-home-nav.jpg" alt=""><img src="assets/screens/d-home-hero.jpg" alt=""><img src="assets/screens/d-notes-read.jpg" alt=""><img src="assets/screens/d-philosophy-concept.jpg" alt=""><img src="assets/screens/d-login-filled.jpg" alt="">
-            </div>
-            <div class="wall-col c3">
-              <img src="assets/screens/d-search-results.jpg" alt=""><img src="assets/screens/d-philosophy-final.jpg" alt=""><img src="assets/screens/d-author-posts.jpg" alt=""><img src="assets/screens/d-home-features.jpg" alt=""><img src="assets/screens/d-preloader.jpg" alt=""><img src="assets/screens/d-notes.jpg" alt="">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- S06 · the hero page, exploded into its real layers ---------------- -->
-      <section class="scene" id="s06">
-        <div class="xp-stage">
-          <div class="xp-tilt">
-            <div class="xp-plane">
-              <img class="xp-layer" src="assets/screens/d-layer-bg.png" alt="">
-              <img class="xp-layer" src="assets/screens/d-layer-frame.png" alt="">
-              <img class="xp-layer" src="assets/screens/d-layer-content.png" alt="">
-              <img class="xp-layer" src="assets/screens/d-layer-sidebar.png" alt="">
-              <img class="xp-layer" src="assets/screens/d-layer-objects.png" alt="">
-            </div>
-          </div>
-        </div>
-        <div class="xp-head">
-          <div class="xp-kicker mono">anatomy of a page</div>
-          <div class="xp-title">5 слоёв</div>
-        </div>
-        <div class="xp-legend mono">
-          <div class="xp-row"><b>05</b><span>objects</span><em>3D tilt · glare · 01.png</em></div>
-          <div class="xp-row"><b>04</b><span>scroll branch</span><em>scroll.svg · progress node</em></div>
-          <div class="xp-row"><b>03</b><span>content</span><em>Entropia · GSAP ScrollTrigger</em></div>
-          <div class="xp-row"><b>02</b><span>page frame</span><em>1px · 6px glass · 1px</em></div>
-          <div class="xp-row"><b>01</b><span>liquid bg</span><em>blur 80px · spring blobs</em></div>
-        </div>
-      </section>
-
-      <!-- S07 · personal language (dictionary GIF glyphs) --------------------- -->
-      <section class="scene" id="s07">
-        <div class="lang-title">свой язык</div>
-        <div class="lang-sub mono"><span>личный словарь</span><i></i><span>12 глифов</span></div>
-        <div class="glyphs">
-          <div class="glyph" data-g="tree" data-n="3"><i class="spr"></i><span class="mono">:gif-tree:</span></div>
-          <div class="glyph" data-g="bliss" data-n="3"><i class="spr"></i><span class="mono">:gif-bliss:</span></div>
-          <div class="glyph" data-g="ear" data-n="3"><i class="spr"></i><span class="mono">:gif-ear:</span></div>
-          <div class="glyph" data-g="doom" data-n="3"><i class="spr"></i><span class="mono">:gif-doom:</span></div>
-          <div class="glyph" data-g="search" data-n="3"><i class="spr"></i><span class="mono">:gif-search:</span></div>
-          <div class="glyph" data-g="sad" data-n="3"><i class="spr"></i><span class="mono">:gif-sad:</span></div>
-          <div class="glyph" data-g="soul-2" data-n="3"><i class="spr"></i><span class="mono">:gif-soul2:</span></div>
-          <div class="glyph" data-g="temple" data-n="4"><i class="spr"></i><span class="mono">:gif-temple:</span></div>
-          <div class="glyph" data-g="ktmz" data-n="3"><i class="spr"></i><span class="mono">:gif-ktmz:</span></div>
-          <div class="glyph" data-g="p-44" data-n="3"><i class="spr"></i><span class="mono">:gif-p-44:</span></div>
-          <div class="glyph" data-g="fb" data-n="3"><i class="spr"></i><span class="mono">:gif-fb:</span></div>
-          <div class="glyph" data-g="bnd" data-n="3"><i class="spr"></i><span class="mono">:gif-bnd:</span></div>
-        </div>
-        <div class="post">
-          <div class="post-num">#005</div>
-          <p class="post-text">сегодня дерево за окном наконец отпустило последний лист <span class="post-gif" data-g="tree" data-n="3"><i class="spr"></i></span> и стало видно, как много в нём было неба.</p>
-          <div class="post-foot mono"><span>сегодня</span><span>поделиться</span></div>
-          <div class="tip"><div class="tip-h">SYNTAX_DECODE</div><div class="tip-m">рост, которого не видно</div></div>
-        </div>
-        <div class="lang-black"></div>
-      </section>
-
-      <!-- S08 · the path + end card ------------------------------------------ -->
-      <section class="scene" id="s08">
-        <div class="path-line"></div>
-        <h2 class="q q1"><span class="ln">это не</span><span class="ln"><span class="w">гонка.<i class="strike"></i></span></span></h2>
-        <h2 class="q q2"><span class="ln">это</span><span class="ln">путь.</span></h2>
-        <div class="end">
-          <div class="end-ring"><img class="ring-base" src="../public/circle.svg" alt=""><img class="ring-fill" src="../public/circle.svg" alt=""></div>
-          <div class="end-impulse"><i></i></div>
-          <canvas class="end-particles" width="1080" height="1920"></canvas>
-          <div class="end-logo"><img src="../public/logo%20[Vectorized].svg" alt=""></div>
-          <div class="end-title">web-almanac</div>
-          <div class="end-meta mono"><span class="em1">ui/ux · motion · front-end</span><span class="em2">vol-3.web-almanac.com</span></div>
-          <div class="end-credit mono"><span>case 01</span><i></i><span id="credit">design &amp; code — @daich68</span></div>
-        </div>
-      </section>
-
-    </div>
-
-    <div id="fx" class="layer"><div class="fx-black"></div></div>
-
-    <div id="hud">
-      <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
-      <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-      <div class="hud-top"><span id="hud-tag">INDEX.VOL_3</span><span class="hud-line"></span><span id="hud-status">ALMANAC_LIVE</span></div>
-      <div class="hud-side">WEB-ALMANAC — CASE 01 — UI/UX · MOTION · FRONT-END</div>
-      <div class="hud-bottom"><span id="hud-scene">01/08</span><span id="hud-title">PRELOADER</span><span class="hud-fill"></span><span id="hud-tc">00:00</span></div>
-      <div class="hud-progress"><i></i></div>
-    </div>
-
-    <div id="cursor">
-      <svg class="c-ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="1"/></svg>
-      <svg class="c-dot" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="2.4" fill="rgba(0,0,0,0.8)"/>
-        <path class="c-sp1" d="M 20,20 Q 25,18 28,20 Q 30,25 28,28 Q 23,30 20,28 Q 17,23 20,20" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="0.7"/>
-        <path class="c-sp2" d="M 20,20 Q 15,18 12,20 Q 10,25 12,28 Q 17,30 20,28" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="0.7"/>
-        <circle class="c-hover" cx="20" cy="20" r="15" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="0.6" stroke-dasharray="2 2" opacity="0"/>
+    <!-- Cursor and finger, drawn from each take's track. -->
+    <div id="pointer">
+      <svg class="p-arrow" viewBox="0 0 24 36" aria-hidden="true">
+        <path d="M2 2 L2 28 L8.5 22 L13 33 L17 31.2 L12.6 20.6 L21 20.6 Z" fill="#111" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
       </svg>
-      <div class="c-ripple"></div>
+      <svg class="p-hand" viewBox="0 0 32 36" aria-hidden="true">
+        <path d="M11 3.5c0-1.4 1.1-2.5 2.5-2.5S16 2.1 16 3.5v10.3l1-.3V11c0-1.4 1.1-2.5 2.5-2.5S22 9.6 22 11v3.2l1-.2v-1.4c0-1.4 1.1-2.5 2.5-2.5S28 11.2 28 12.6V24c0 5.5-4.5 10-10 10h-2.6c-3 0-5.8-1.5-7.5-4L3.4 23.2c-.8-1.2-.5-2.8.7-3.6 1.1-.7 2.6-.5 3.4.6L11 25V3.5z" fill="#fff" stroke="#111" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
     </div>
+    <div id="touch"><i class="t-dot"></i><i class="t-ring"></i></div>
+
+    <!-- End card -->
+    <section id="end">
+      <img class="end-logo" src="../public/logo%20[Vectorized].svg" alt="Vol-3">
+      <div class="end-qrs">
+        <figure class="qr"><div class="qr-code" data-src="assets/qr/telegram.svg"></div><figcaption>t.me/vastu_sastra</figcaption></figure>
+        <figure class="qr"><div class="qr-code" data-src="assets/qr/site.svg"></div><figcaption>vol-3.web-almanac.com</figcaption></figure>
+      </div>
+    </section>
 
   </div>
 </div>
@@ -270,9 +43,6 @@
 </div>
 
 <script src="../node_modules/gsap/dist/gsap.min.js"></script>
-<script src="../node_modules/gsap/dist/SplitText.min.js"></script>
-<script src="../node_modules/gsap/dist/DrawSVGPlugin.min.js"></script>
-<script src="../node_modules/gsap/dist/CustomEase.min.js"></script>
 <script src="reel.js"></script>
 </body>
 </html>
