@@ -14,6 +14,8 @@ import { DisplayGifWithMean } from "./Gifs";
 import { safeLocalStorage } from "../../utils/localStorage";
 import { useLoader } from "../../contexts/LoaderContext";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
+import { CompanionShelf } from "../../components/Companions/CompanionShelf";
+import { isServiceEntry } from "../../components/Companions/companions";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -176,9 +178,18 @@ export const AuthorPage: React.FC = () => {
 
     const onUpdateDict = async (d: DictEntry[]) => {
         if (!userID) return;
+        // the companions record may have changed since the page loaded (the cat spins the wheel
+        // in the background) — keep the server's copy, not the one this page started with
+        let service = d.filter(isServiceEntry);
+        try {
+            const fresh = await GetDictByAuthorID(userID);
+            service = (fresh[0]?.dict || []).filter(isServiceEntry);
+        } catch (error) {
+            console.error(error);
+        }
         const newDict: Dict = {
             _id: dict?._id,
-            dict: d,
+            dict: [...d.filter((e) => !isServiceEntry(e)), ...service],
             author_id: userID,
         }
 
@@ -229,10 +240,12 @@ export const AuthorPage: React.FC = () => {
                                 </div>
                                 <div className="stat-divider" />
                                 <div className="stat-box">
-                                    <span className="stat-value">{dict?.dict.length || 0}</span>
+                                    <span className="stat-value">{dict?.dict.filter((e) => !isServiceEntry(e)).length || 0}</span>
                                     <span className="stat-label">терминов</span>
                                 </div>
                             </div>
+
+                            <CompanionShelf authorId={author._id} dict={dict?.dict || []} isSelf={isSelfPage} />
 
                             <div className="author-nav-premium">
                                 <button className="author-nav-item" onClick={() => { setIsDictModalOpen(true); playB(); }}>

@@ -164,13 +164,6 @@
   background-size: 25px 20px;
 }
 
-/* Философия - концентрические круги */
-.mini-tree-branch[data-branch-id="philosophy"]::after {
-  background:
-    radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.12) 35%, rgba(0, 0, 0, 0.12) 38%, transparent 38%);
-  background-size: 35px 35px;
-}
-
 /* Профиль - органические пятна */
 .mini-tree-branch[data-branch-id="person"]::after {
   background:

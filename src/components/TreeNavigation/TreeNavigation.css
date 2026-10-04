@@ -192,16 +192,6 @@
   background-size: 50px 50px;
 }
 
-/* Философия - концентрические круги */
-.branch[data-branch-id="philosophy"] .branch-content::before {
-  background:
-    radial-gradient(circle at center, transparent 25%, rgba(0, 0, 0, 0.1) 25%, rgba(0, 0, 0, 0.1) 27%, transparent 27%),
-    radial-gradient(circle at center, transparent 45%, rgba(0, 0, 0, 0.08) 45%, rgba(0, 0, 0, 0.08) 47%, transparent 47%),
-    radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.06) 65%, rgba(0, 0, 0, 0.06) 67%, transparent 67%);
-  background-size: 70px 70px;
-  background-position: center;
-}
-
 /* Профиль - органические пятна */
 .branch[data-branch-id="person"] .branch-content::before {
   background:
