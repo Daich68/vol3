@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Token } from "../../entity/Entity";
 import { GetAuthors } from "../../requests/Api";
 import { safeLocalStorage } from "../../utils/localStorage";
+import { LOGIN_HINT, PASSWORD_HINT, validateLogin, validatePassword } from "../../utils/authValidation";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import gsap from "gsap";
 
@@ -61,15 +62,6 @@ export const Login: React.FC = () => {
         }
     };
 
-    const validatePassword = (password: string): boolean => {
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        return passwordRegex.test(password);
-    };
-
-    const validateLogin = (login: string): boolean => {
-        return login.length >= 5;
-    };
-
     const isLoginExist = async (login: string): Promise<boolean> => {
         try {
             const authors = await GetAuthors();
@@ -105,12 +97,12 @@ export const Login: React.FC = () => {
         }
 
         if (!validatePassword(password)) {
-            setPasswordError("минимум 8 символов: латиница и цифры");
+            setPasswordError(PASSWORD_HINT);
             return;
         }
 
         if (!validateLogin(login)) {
-            setLoginError("минимум 5 символов")
+            setLoginError(LOGIN_HINT)
             return;
         }
 

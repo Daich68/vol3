@@ -1,0 +1,268 @@
+/* ================================================================ the shelf on the profile */
+.companion-shelf {
+    width: 100%;
+    max-width: 520px;
+    margin: 1.6rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.companion-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(17, 17, 17, 0.5);
+}
+
+.companion-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.15), transparent);
+}
+
+.companion-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* dark plates on the white page — the ink chapters of the case, in small */
+.companion-tile {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    padding: 5px;
+    border: 1px solid #1a1a1a;
+    background: #0e0e0e;
+    outline: 3px solid rgba(220, 220, 220, 0.55);
+    overflow: hidden;
+    cursor: help;
+    animation: companion-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 0.08s);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.companion-tile:hover {
+    transform: translateY(-3px);
+}
+
+/* a slow sheen crosses each plate, out of step with its neighbours */
+.companion-tile::after {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.22) 50%, transparent 58%);
+    transform: translateX(-70%);
+    animation: companion-sheen 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-delay: calc(1.2s + var(--i, 0) * 0.7s);
+    pointer-events: none;
+}
+
+.companion-glyph {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: invert(1);
+}
+
+.companion-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2px;
+    font-family: monospace;
+    font-size: 0.48rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.55);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.companion-tile:hover .companion-name {
+    opacity: 1;
+}
+
+.companion-empty {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #999;
+}
+
+.companion-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem 1.2rem;
+    font-family: monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: #888;
+}
+
+.companion-countdown {
+    font-family: 'DeltaBlock', monospace;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    font-variant-numeric: tabular-nums;
+}
+
+.companion-danger .companion-countdown {
+    color: #b23a35;
+}
+
+.companion-spin {
+    padding: 0.35rem 0.7rem;
+    border: 0;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Entropia', serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.companion-spin:hover {
+    background: #000;
+}
+
+.companion-spin:active {
+    transform: scale(0.96);
+}
+
+@keyframes companion-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); filter: blur(4px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes companion-sheen {
+    0%, 70% { transform: translateX(-70%); }
+    100% { transform: translateX(70%); }
+}
+
+/* ================================================================ the wheel */
+.wheel {
+    --wheel-size: 250px;
+    --wheel-cell: 44px;
+    --wheel-r: calc(var(--wheel-size) / 2 - var(--wheel-cell) / 2 - 10px);
+    position: relative;
+    flex-shrink: 0;
+    width: var(--wheel-size);
+    height: var(--wheel-size);
+    margin: 0 auto;
+}
+
+.wheel-disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid #1a1a1a;
+    background:
+        radial-gradient(circle, #fff 0 34%, transparent 34.4%),
+        repeating-conic-gradient(from -15deg, rgba(0, 0, 0, 0.06) 0 0.5deg, transparent 0.5deg 30deg),
+        #fff;
+    box-shadow: 0 0 0 6px rgba(226, 226, 226, 0.6), 0 0 0 7px #1a1a1a, 0 24px 50px rgba(0, 0, 0, 0.12);
+    will-change: transform;
+}
+
+.wheel-slot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--wheel-cell);
+    height: var(--wheel-cell);
+    margin: calc(var(--wheel-cell) / -2) 0 0 calc(var(--wheel-cell) / -2);
+}
+
+.wheel-face {
+    width: 100%;
+    height: 100%;
+}
+
+.wheel-glyph {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.28;
+    filter: grayscale(1);
+    transition: opacity 0.6s ease;
+}
+
+.wheel-slot.is-owned .wheel-glyph {
+    opacity: 1;
+}
+
+/* the one under the pointer comes into ink, whoever it is */
+.wheel-slot.is-hit .wheel-glyph {
+    opacity: 1;
+    animation: wheel-hit 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes wheel-hit {
+    0% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
+.wheel-pointer {
+    position: absolute;
+    left: 50%;
+    top: -14px;
+    z-index: 2;
+    width: 1px;
+    height: 26px;
+    background: #1a1a1a;
+}
+
+.wheel-pointer::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    bottom: -4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #1a1a1a;
+}
+
+.wheel-hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 34%;
+    text-align: center;
+    font-family: 'Entropia', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .wheel {
+        --wheel-size: 210px;
+        --wheel-cell: 38px;
+    }
+
+    .companion-tile {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .companion-tile,
+    .companion-tile::after {
+        animation: none;
+    }
+}

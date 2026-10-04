@@ -39,14 +39,6 @@ export const TreeNavigation: React.FC = () => {
       videoSrc: '/grok-video-7223f3a3-740c-4475-94e7-61fb94c7e026 (1).mp4'
     },
     {
-      id: 'philosophy',
-      label: 'философия',
-      description: 'о нашем проекте',
-      path: '/philosophy',
-      level: 2,
-      pattern: 'M15,15 Q25,5 35,15 Q45,25 55,15 Q65,5 75,15'
-    },
-    {
       id: 'person',
       label: 'профиль',
       description: 'ваша страница и словарик',

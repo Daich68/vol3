@@ -1,244 +1,179 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { Glyph } from '../Glyph/Glyph';
+import { GlyphKey, preloadGlyphs } from '../Glyph/glyphs';
 import './Preloader.css';
 
 interface PreloaderProps {
     onComplete: () => void;
-    onStartExit?: () => void;
+    /** catRect is passed when the cat outlives the curtain and someone else takes it from here */
+    onStartExit?: (catRect: DOMRect | null) => void;
+    keepCat?: boolean;
+    /** the guide has drawn its own cat over ours — hide ours in the same frame */
+    catHandedOff?: boolean;
 }
 
-export const Preloader: React.FC<PreloaderProps> = ({ onComplete, onStartExit }) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const logoRef = useRef<HTMLImageElement>(null);
-    const scrollRef = useRef<HTMLImageElement>(null);
-    const counterRef = useRef<HTMLDivElement>(null);
+// III · РАСШИФРОВКА from the Behance case, as a loader: the word stands as boiling signs and
+// decodes letter by letter while the page loads. The cat at the end never decodes — it is a sign,
+// not a letter, and the line reads the way a post does: words, then a sign.
+const WORD = 'вольтри';
+// signs whose silhouette rhymes with the letter: the spiral is О, the tree is Л, the roof is Т
+const WORD_GLYPHS: GlyphKey[] = ['ear', 'sad', 'tree', 'p44', 'temple', 'search', 'doom'];
+const STEP = 0.17;      // decode cadence of the ch3 band, s
+const MIN_TIME = 1600;  // ms
+const MAX_WAIT = 5000;  // ms
 
-    // State to track if we've already started the exit sequence to prevent double-firing
-    const [isExiting, setIsExiting] = useState(false);
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const pageLoaded = () => new Promise<void>((resolve) => {
+    if (document.readyState === 'complete') return resolve();
+    window.addEventListener('load', () => resolve(), { once: true });
+});
+
+export const Preloader: React.FC<PreloaderProps> = ({ onComplete, onStartExit, keepCat = false, catHandedOff = false }) => {
+    const rootRef = useRef<HTMLDivElement>(null);
+    const stageRef = useRef<HTMLDivElement>(null);
+    const footerRef = useRef<HTMLDivElement>(null);
+    const captionRef = useRef<HTMLParagraphElement>(null);
+    const counterRef = useRef<HTMLSpanElement>(null);
+    const statusRef = useRef<HTMLSpanElement>(null);
+    const catRef = useRef<HTMLSpanElement>(null);
+    const chRefs = useRef<(HTMLSpanElement | null)[]>([]);
+    const glRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+    // the timeline below runs once; callbacks are read at call time
+    const callbacks = useRef({ onComplete, onStartExit, keepCat });
+    callbacks.current = { onComplete, onStartExit, keepCat };
 
     useEffect(() => {
-        // 1. Minimum display time promise (3s for effect)
-        const minTimePromise = new Promise<void>((resolve) => {
-            setTimeout(resolve, 3000);
-        });
+        const chs = chRefs.current.filter(Boolean) as HTMLSpanElement[];
+        const gls = glRefs.current.filter(Boolean) as HTMLSpanElement[];
+        const cat = catRef.current;
+        const n = chs.length;
+        const progress = { p: 0 };
+        let decoded = 0;
+        let nextAt = 0;
+        let allDecodedAt = -1;
+        let ready = false;
+        let exiting = false;
+        let alive = true;
+        let fill: gsap.core.Tween | null = null;
 
-        // 2. Window load promise
-        const loadPromise = new Promise<void>((resolve) => {
-            if (document.readyState === 'complete') {
-                resolve();
-            } else {
-                const handler = () => {
-                    resolve();
-                    window.removeEventListener('load', handler);
-                };
-                window.addEventListener('load', handler);
+        const ctx = gsap.context(() => {
+            gsap.set(chs, { opacity: 0, y: '0.06em' });
+            gsap.set([...gls, cat], { opacity: 0, scale: 0.86 });
+            gsap.set([captionRef.current, footerRef.current], { opacity: 0 });
+        }, rootRef);
+
+        const setStatus = (text: string) => {
+            if (statusRef.current && statusRef.current.textContent !== text) statusRef.current.textContent = text;
+        };
+
+        // a sign falls apart and the letter rises out of it, the way a tooltip rises (0.4 s expo)
+        const decode = (i: number) => {
+            gsap.to(gls[i], { opacity: 0, scale: 0.8, duration: 0.25, ease: 'power2.in' });
+            gsap.to(chs[i], { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out', delay: 0.12 });
+        };
+
+        const exit = () => {
+            exiting = true;
+            gsap.ticker.remove(tick);
+            setStatus('ACCESS_GRANTED');
+            const { keepCat: keep, onStartExit: startExit } = callbacks.current;
+            const catRect = keep && cat ? cat.getBoundingClientRect() : null;
+            document.documentElement.classList.remove('is-preloading');
+            startExit?.(catRect);
+
+            // the curtain lifts; its edge passes through the word from below
+            gsap.timeline({ onComplete: () => callbacks.current.onComplete() })
+                .to(footerRef.current, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 0)
+                .to(stageRef.current, { y: -40, duration: 1.1, ease: 'power3.inOut' }, 0.1)
+                .to(rootRef.current, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1, ease: 'power4.inOut' }, 0.1);
+        };
+
+        // letters never decode faster than the ch3 rhythm and never ahead of the real progress:
+        // a queue, not a direct mapping, so a slow network still reads as a steady decoding
+        const tick = () => {
+            const now = gsap.ticker.time;
+            const target = Math.min(n, Math.floor(progress.p * n + 1e-6));
+            if (decoded < target && now >= nextAt) {
+                decode(decoded++);
+                nextAt = now + STEP;
+                if (decoded === n) allDecodedAt = now;
             }
-        });
-
-        // 3. Fallback promise (5s max)
-        const timeoutPromise = new Promise<void>((resolve) => {
-            setTimeout(resolve, 5000);
-        });
-
-        // Wait for (load OR timeout) AND minTime
-        Promise.all([
-            Promise.race([loadPromise, timeoutPromise]),
-            minTimePromise
-        ]).then(() => {
-            if (isExiting) return;
-            setIsExiting(true);
-
-            // Notify parent that exit animation is starting
-            if (onStartExit) onStartExit();
-
-            // Exit Animation Timeline
-            const tl = gsap.timeline({
-                onComplete: onComplete
-            });
-
-            // 1. Fade out details
-            tl.to([counterRef.current, ".preloader-meta", ".preloader-scroll-container", ".preloader-bg-pattern", ".preloader-circle-wrapper"], {
-                opacity: 0,
-                y: -20,
-                duration: 0.5,
-                stagger: 0.05,
-                ease: "power2.in"
-            })
-                // 2. Scale Logo massively and blur
-                .to(logoRef.current, {
-                    scale: 20,
-                    opacity: 0,
-                    filter: "blur(20px)",
-                    duration: 1.2,
-                    ease: "expo.inOut" // Smooth acceleration
-                }, "-=0.2")
-                // 3. Reveal Content (Swipe Up)
-                .to(containerRef.current, {
-                    clipPath: "inset(0% 0% 100% 0%)",
-                    duration: 1,
-                    ease: "power4.inOut"
-                }, "-=0.9");
-        });
-    }, [onComplete, isExiting, onStartExit]);
-
-    // Entrance & Loop Animations
-    useEffect(() => {
-        const tl = gsap.timeline();
-
-        // --- Circular Diagram Animation ---
-        const baseCircle = document.querySelector(".progress-ring__base-circle");
-        const fillCircle = document.querySelector(".progress-ring__fill-circle");
-
-        if (baseCircle && fillCircle) {
-            gsap.set([baseCircle, fillCircle], {
-                scale: 0.95,
-                opacity: 0,
-                rotate: -90,
-                "--fill-angle": "0deg"
-            });
-
-            gsap.to(baseCircle, {
-                opacity: 0.03,
-                scale: 1,
-                duration: 2,
-                ease: "expo.out"
-            });
-
-            gsap.to(fillCircle, {
-                opacity: 0.8,
-                scale: 1,
-                duration: 2,
-                ease: "expo.out",
-                delay: 0.5
-            });
-
-            // Progressive Fill - Smoother and lighter
-            gsap.to(fillCircle, {
-                "--fill-angle": "360deg",
-                duration: 4.5,
-                ease: "power2.inOut",
-            });
-
-            // Extreme Minimalist Rotation
-            gsap.to([baseCircle, fillCircle], {
-                rotate: 30, // Just a tiny nudge of rotation
-                duration: 10,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-
-            // Minimalist "Breathing" Glow - Neutral White
-            gsap.to(fillCircle, {
-                filter: "invert(0.1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))",
-                duration: 3,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-        }
-
-        // --- Logo Animation Refinement ---
-        if (logoRef.current) {
-            // Initial Entrance
-            gsap.fromTo(logoRef.current,
-                { opacity: 0, y: 20, scale: 0.9, filter: "blur(10px)" },
-                { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 2, ease: "expo.out" }
-            );
-
-            // Subtle Glitch/Pulse effect
-            const logoTimeline = gsap.timeline({ repeat: -1, repeatDelay: 4 });
-            logoTimeline
-                .to(logoRef.current, { scale: 1.05, duration: 0.1, ease: "power4.in" })
-                .to(logoRef.current, { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.3)" })
-                .to(logoRef.current, { opacity: 0.7, x: -2, duration: 0.05 })
-                .to(logoRef.current, { opacity: 1, x: 0, duration: 0.05 });
-        }
-
-        // Counter Simulation
-        let counterObj = { val: 0 };
-        gsap.to(counterObj, {
-            val: 100,
-            duration: 3,
-            ease: "expo.out",
-            onUpdate: () => {
-                if (counterRef.current) {
-                    counterRef.current.innerText = Math.floor(counterObj.val).toString().padStart(3, '0');
-                }
+            if (counterRef.current) {
+                counterRef.current.textContent = String(Math.round(progress.p * 100)).padStart(3, '0');
             }
+            if (decoded > 0 && decoded < n) setStatus('DECODING');
+            if (decoded === n && ready && !exiting && now - allDecodedAt > 0.55) exit();
+        };
+
+        const fontsReady = document.fonts
+            ? document.fonts.load('900 1em Entropia').then(() => undefined, () => undefined)
+            : Promise.resolve();
+        const assets = Promise.race([
+            Promise.all([preloadGlyphs([...WORD_GLYPHS, 'ktmz']), fontsReady]).then(() => undefined),
+            wait(1500),
+        ]);
+
+        assets.then(() => {
+            if (!alive) return;
+            gsap.timeline()
+                .to(gls, { opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out', stagger: 0.05 }, 0)
+                .to(cat, { opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out' }, 0.38)
+                .fromTo(captionRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.3)
+                .to(footerRef.current, { opacity: 1, duration: 1, ease: 'power2.out' }, 0.4);
+            fill = gsap.to(progress, { p: 0.86, duration: 1.8, ease: 'power2.out', delay: 0.35 });
+            gsap.ticker.add(tick);
         });
 
-        // Background Pattern Float
-        gsap.to(".preloader-bg-pattern", {
-            backgroundPosition: "100px 100px",
-            duration: 20,
-            repeat: -1,
-            ease: "none"
+        Promise.all([Promise.race([pageLoaded(), wait(MAX_WAIT)]), wait(MIN_TIME), assets]).then(() => {
+            if (!alive) return;
+            fill?.kill();
+            gsap.to(progress, { p: 1, duration: 0.5, ease: 'power2.inOut', onComplete: () => { ready = true; } });
         });
 
-        // Footer Elements Entrance
-        tl.from([".preloader-meta", counterRef.current, ".preloader-scroll-container"], {
-            opacity: 0,
-            y: 20,
-            stagger: 0.2,
-            duration: 1,
-            ease: "power2.out"
-        }, "-=1");
-
+        return () => {
+            alive = false;
+            gsap.ticker.remove(tick);
+            ctx.revert();
+        };
     }, []);
 
     return (
-        <div className="preloader" ref={containerRef}>
-            <div className="preloader-bg-pattern" />
-
-            <div className="preloader-content">
-                <div className="preloader-center-stage">
-
-                    {/* Custom Integrated Circle Diagram */}
-                    <div className="preloader-circle-wrapper">
-                        {/* Base Layer (Faint Static Reference) */}
-                        <img
-                            src="/circle.svg"
-                            className="progress-ring__base-circle"
-                            alt=""
+        <div className="preloader" ref={rootRef}>
+            <div className="preloader-stage" ref={stageRef}>
+                <div className="preloader-word" role="img" aria-label="вольтри">
+                    {Array.from(WORD).map((ch, i) => (
+                        <span className="preloader-letter" key={i}>
+                            <span className="preloader-ch" ref={(el) => { chRefs.current[i] = el; }}>{ch}</span>
+                            <Glyph
+                                name={WORD_GLYPHS[i]}
+                                phase={i * 7}
+                                className="preloader-gl"
+                                ref={(el) => { glRefs.current[i] = el; }}
+                            />
+                        </span>
+                    ))}
+                    <span className="preloader-cat-slot">
+                        <Glyph
+                            name="ktmz"
+                            phase={49}
+                            className="preloader-cat"
+                            ref={catRef}
+                            style={catHandedOff ? { visibility: 'hidden' } : undefined}
                         />
-                        {/* Interactive Fill Layer (Glow + Progress) */}
-                        <img
-                            src="/circle.svg"
-                            className="progress-ring__fill-circle"
-                            alt=""
-                        />
-                    </div>
-
-                    <div className="preloader-logo-container">
-                        <img
-                            src="/logo [Vectorized].svg"
-                            alt="Voltri"
-                            className="preloader-logo"
-                            ref={logoRef}
-                        />
-                    </div>
+                    </span>
                 </div>
+                <p className="preloader-caption" ref={captionRef}>каждый знак — чьё-то слово</p>
+            </div>
 
-                <div className="preloader-footer">
-                    <div className="preloader-meta">
-                        <span>INDEX.VOL_3</span>
-                        <span>LOADING_ASSETS</span>
-                    </div>
-
-                    <div className="preloader-counter" ref={counterRef}>
-                        000
-                    </div>
-
-                    <div className="preloader-scroll-container">
-                        <img
-                            src="/scroll.svg"
-                            alt="Scroll"
-                            className="preloader-scroll"
-                            ref={scrollRef}
-                        />
-                    </div>
+            <div className="preloader-footer" ref={footerRef}>
+                <div className="preloader-meta">
+                    <span>INDEX.VOL_3</span>
+                    <span ref={statusRef}>LOADING_ASSETS</span>
                 </div>
+                <span className="preloader-counter" ref={counterRef}>000</span>
             </div>
         </div>
     );

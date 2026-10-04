@@ -1,0 +1,987 @@
+/* ================================================================ the cat */
+/* One element for the whole journey: preloader → window → page frame. Placed by GSAP
+   (x, y, scale with origin 0 0); the inner wrappers lean, squash and breathe about her paws. */
+.guide-cat {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 120px;
+    height: 120px;
+    transform-origin: 0 0;
+    z-index: 10001;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.guide-cat.is-seated,
+.guide-cat.is-touring {
+    z-index: 1500;
+}
+
+/* while she crosses from the black curtain to the white page: white ink, difference blend —
+   she turns black exactly where the edge passes through her */
+.guide-cat.is-blend {
+    mix-blend-mode: difference;
+}
+
+.guide-cat.is-blend .guide-cat-glyph {
+    filter: invert(1);
+}
+
+.guide-cat-hit {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    pointer-events: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.guide-cat.is-seated .guide-cat-hit,
+.guide-cat.is-touring .guide-cat-hit,
+.guide-cat.is-open .guide-cat-hit {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.guide-cat-hit:focus-visible {
+    outline: 1px solid #1a1a1a;
+    outline-offset: 4px;
+}
+
+.guide-cat-lean,
+.guide-cat-squash,
+.guide-cat-breath {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-origin: 46% 96%;
+}
+
+.guide-cat-glyph {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ================================================================ her lines */
+/* the wrapper is placed by GSAP beside her head; the box inside appears and leaves */
+.guide-bubble {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1501;
+    width: max-content;
+    max-width: min(300px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+.guide-bubble-box {
+    position: relative;
+    padding: 0.75rem 0.95rem 0.8rem;
+    background: #fff;
+    border: 1px solid #1a1a1a;
+    outline: 4px solid rgba(220, 220, 220, 0.5);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    pointer-events: auto;
+    transform-origin: 0% 100%;
+}
+
+.guide-bubble[data-side="left"] .guide-bubble-box {
+    transform-origin: 100% 100%;
+}
+
+/* a short stroke towards her head — the same 1 px line as the frames */
+.guide-bubble-box::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 14px;
+    width: 1px;
+    height: 12px;
+    background: #1a1a1a;
+    transform: rotate(-35deg);
+    transform-origin: top;
+}
+
+.guide-bubble[data-side="left"] .guide-bubble-box::after {
+    left: auto;
+    right: 14px;
+    transform: rotate(35deg);
+}
+
+.guide-bubble .guide-speech {
+    font-size: 0.98rem;
+    line-height: 1.4;
+}
+
+.guide-bubble-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 0.6rem;
+}
+
+.guide-bubble-btn,
+.guide-bubble-quiet {
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    font-family: 'Entropia', serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.guide-bubble-btn:hover,
+.guide-bubble-quiet:hover {
+    color: #1a1a1a;
+}
+
+.guide-bubble-btn.is-primary {
+    padding: 0.45rem 0.8rem;
+    background: #1a1a1a;
+    color: #fff;
+    transition: background 0.3s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-bubble-btn.is-primary:hover {
+    background: #000;
+    color: #fff;
+}
+
+.guide-bubble-btn.is-primary:active {
+    transform: scale(0.96);
+}
+
+.guide-bubble-quiet {
+    margin-right: auto;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: #bbb;
+}
+
+/* the element she is showing during the tour */
+.guide-spot {
+    outline: 1px solid #1a1a1a !important;
+    outline-offset: 6px;
+    animation: guide-spot 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes guide-spot {
+    0%, 100% { outline-offset: 6px; outline-color: rgba(26, 26, 26, 0.9); }
+    50% { outline-offset: 10px; outline-color: rgba(26, 26, 26, 0.35); }
+}
+
+/* ================================================================ the window */
+.guide-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+}
+
+.guide-veil {
+    position: absolute;
+    inset: 0;
+    background: rgba(14, 14, 14, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* top-anchored: the window grows downwards, so its top edge — her seat — never moves */
+.guide-window {
+    --guide-top: max(17vh, 150px);
+    position: absolute;
+    top: var(--guide-top);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: min(560px, calc(100vw - 32px));
+}
+
+.guide-topline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #1a1a1a;
+    z-index: 2;
+}
+
+.guide-bolt {
+    position: absolute;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: linear-gradient(to top, rgba(26, 26, 26, 0) 0%, #1a1a1a 35%, #1a1a1a 100%);
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* double border — the gap architecture of the site's frames and modals */
+.guide-frame {
+    position: relative;
+    border: 1px solid #1a1a1a;
+    padding: 7px;
+    background: rgba(226, 226, 226, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.18);
+}
+
+.guide-inner {
+    border: 1px solid #1a1a1a;
+    background: #fff;
+    overflow: hidden;
+}
+
+.guide-sizer {
+    overflow-y: auto;
+    max-height: calc(100vh - var(--guide-top) - 48px);
+    max-height: calc(100dvh - var(--guide-top) - 48px);
+    overscroll-behavior: contain;
+}
+
+.guide-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    padding: 1.5rem 2rem 1.8rem;
+}
+
+.guide-stack {
+    position: relative;
+}
+
+.guide-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+}
+
+/* ---------------------------------------------------------------- head */
+.guide-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: rgba(17, 17, 17, 0.45);
+}
+
+.guide-progress {
+    position: relative;
+    flex: 1;
+    height: 1px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.guide-progress span {
+    position: absolute;
+    inset: 0;
+    background: #1a1a1a;
+    transform-origin: left;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-close {
+    padding: 0 0 0 0.3rem;
+    border: 0;
+    background: none;
+    font-family: 'Entropia', serif;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-close:hover:not(:disabled) {
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.guide-close:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* ---------------------------------------------------------------- her line */
+.guide-speech {
+    position: relative;
+    margin: 0;
+    font-family: 'Entropia', serif;
+    font-size: 1.32rem;
+    line-height: 1.45;
+    color: #1a1a1a;
+    cursor: default;
+}
+
+.guide-speech-word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.guide-speech-word > span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.22em);
+    transition: opacity 0.28s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-speech-word > span.is-on {
+    opacity: 1;
+    transform: none;
+}
+
+.guide-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- intro */
+.guide-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.guide-fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 0.2rem;
+}
+
+.guide-fact + .guide-fact {
+    padding-left: 1rem;
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.guide-fact-num {
+    font-family: 'DeltaBlock', monospace;
+    font-size: 2rem;
+    line-height: 1;
+    color: #111;
+}
+
+.guide-decoded {
+    position: relative;
+    display: inline-block;
+}
+
+.guide-decoded-text {
+    display: inline-block;
+}
+
+.guide-decoded-glyph {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.3em;
+    height: 1.3em;
+    margin: -0.7em 0 0 -0.65em;
+}
+
+.guide-fact-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+}
+
+/* ---------------------------------------------------------------- controls */
+.guide-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.guide-btn {
+    position: relative;
+    overflow: hidden;
+    padding: 0.95rem 1.8rem;
+    border: 0;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Entropia', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.4s ease, padding 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-btn::after {
+    content: '→';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-btn:hover:not(:disabled) {
+    background: #000;
+    padding-right: 2.6rem;
+}
+
+.guide-btn:hover:not(:disabled)::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.guide-btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.guide-btn:disabled {
+    background: #eee;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.guide-btn span {
+    display: inline-block;
+}
+
+.guide-btn-text {
+    position: relative;
+    padding: 0.5rem 0;
+    border: 0;
+    background: none;
+    font-family: 'Entropia', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.guide-btn-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 1px;
+    background: #1a1a1a;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-btn-text:hover {
+    color: #1a1a1a;
+}
+
+.guide-btn-text:hover::after {
+    transform: scaleX(1);
+}
+
+.guide-link {
+    align-self: center;
+    padding: 0.2rem;
+    border: 0;
+    background: none;
+    font-family: 'Entropia', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: #999;
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.2);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.guide-link:hover {
+    color: #1a1a1a;
+}
+
+.guide-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.guide-label {
+    font-family: 'Entropia', serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.guide-textarea,
+.guide-input {
+    width: 100%;
+    padding: 0.6rem 0;
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #111;
+    resize: none;
+    transition: border-color 0.4s ease, padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-textarea:focus,
+.guide-input:focus {
+    outline: none;
+    border-bottom-color: #000;
+    padding-left: 0.5rem;
+}
+
+.guide-textarea::placeholder,
+.guide-input::placeholder {
+    color: #ccc;
+}
+
+.guide-input:disabled {
+    opacity: 0.4;
+}
+
+.guide-meta {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: #bbb;
+}
+
+.guide-error {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: #d9534f;
+}
+
+.guide-msg {
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(217, 83, 79, 0.12);
+    background: rgba(217, 83, 79, 0.05);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #d9534f;
+}
+
+.guide-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.guide-password {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.guide-password .guide-input {
+    padding-right: 5.5rem;
+}
+
+.guide-eye {
+    position: absolute;
+    right: 0;
+    padding: 0.4rem 0;
+    border: 0;
+    background: none;
+    font-family: 'Entropia', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #999;
+    cursor: pointer;
+}
+
+.guide-eye:hover {
+    color: #1a1a1a;
+}
+
+/* ---------------------------------------------------------------- the note and its sign */
+.guide-ticket {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.9rem;
+    padding: 0.85rem 1rem 0.9rem 1.1rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fcfcfc;
+}
+
+.guide-ticket-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.guide-ticket-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #bbb;
+}
+
+.guide-ticket-text {
+    margin: 0;
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: #222;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.guide-ticket-sign-wrap {
+    flex-shrink: 0;
+    display: block;
+    width: 2.6rem;
+    height: 2.6rem;
+}
+
+.guide-ticket-sign {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.guide-sign {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.guide-reel {
+    flex-shrink: 0;
+    width: 132px;
+    height: 132px;
+    padding: 6px;
+    border: 1px solid #1a1a1a;
+    background: rgba(226, 226, 226, 0.5);
+}
+
+.guide-reel-window {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #1a1a1a;
+    background: #fff;
+}
+
+.guide-reel-cell {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+.guide-reel-glyph {
+    width: 82%;
+    height: 82%;
+}
+
+.guide-reel.is-empty .guide-reel-cell {
+    visibility: hidden !important;
+}
+
+.guide-reel-none {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DeltaBlock', monospace;
+    font-size: 2rem;
+    color: #ccc;
+}
+
+.guide-sign-side {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.guide-sign-tag {
+    font-family: 'DeltaBlock', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+}
+
+.guide-nosign {
+    align-self: flex-start;
+    margin-top: 0.2rem;
+}
+
+.guide-nosign.is-on {
+    color: #1a1a1a;
+}
+
+.guide-nosign.is-on::after {
+    transform: scaleX(1);
+}
+
+/* all twelve signs in one row, exactly as wide as the window */
+.guide-picker {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 5px;
+}
+
+.guide-pick {
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #fff;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
+}
+
+.guide-pick:hover {
+    transform: translate(-2px, -2px);
+    border-color: #1a1a1a;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.06);
+}
+
+.guide-pick:active {
+    transform: scale(0.94);
+}
+
+.guide-pick.is-on {
+    border-color: #1a1a1a;
+    box-shadow: inset 0 0 0 1px #1a1a1a;
+}
+
+.guide-pick-glyph {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.guide-progress-line {
+    position: relative;
+    height: 1px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.guide-progress-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    background: #1a1a1a;
+    animation: guide-run 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes guide-run {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(340%); }
+}
+
+/* ---------------------------------------------------------------- the published card */
+.guide-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1.6rem 1.6rem 1.2rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
+.guide-card-num {
+    position: absolute;
+    top: -0.7rem;
+    right: 1rem;
+    font-family: 'Entropia', serif;
+    font-weight: 900;
+    font-size: 3.4rem;
+    color: rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+}
+
+.guide-card-text {
+    position: relative;
+    margin: 0 0 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #222;
+    overflow-wrap: anywhere;
+}
+
+.guide-card-sign {
+    display: inline-block;
+    width: 2.4em;
+    height: 2.4em;
+    margin-left: 0.4em;
+    vertical-align: -0.8em;
+}
+
+.guide-card-foot {
+    display: flex;
+    justify-content: space-between;
+    font-family: monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #aaa;
+}
+
+/* ---------------------------------------------------------------- companions in the window */
+.guide-grant {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fcfcfc;
+}
+
+.guide-grant-tile {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+}
+
+.guide-grant-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.guide-grant-name {
+    font-family: 'Entropia', serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    line-height: 1.1;
+}
+
+.guide-wheel {
+    padding: 1.2rem 0 0.4rem;
+}
+
+.guide-wheel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1.2rem;
+    font-family: monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: #888;
+}
+
+/* ---------------------------------------------------------------- phone */
+@media (max-width: 768px) {
+    .guide-window {
+        --guide-top: max(13vh, 104px);
+        width: calc(100vw - 20px);
+    }
+
+    .guide-content {
+        gap: 1.1rem;
+        padding: 1.2rem 1.1rem 1.3rem;
+    }
+
+    .guide-body {
+        gap: 1.1rem;
+    }
+
+    .guide-speech {
+        font-size: 1.12rem;
+    }
+
+    .guide-fact-num {
+        font-size: 1.6rem;
+    }
+
+    .guide-fact + .guide-fact {
+        padding-left: 0.7rem;
+    }
+
+    .guide-sign {
+        gap: 1rem;
+    }
+
+    .guide-reel {
+        width: 104px;
+        height: 104px;
+    }
+
+    .guide-btn {
+        padding: 0.85rem 1.1rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.16em;
+    }
+
+    .guide-btn:hover:not(:disabled) {
+        padding-right: 1.1rem;
+    }
+
+    .guide-btn:hover:not(:disabled)::after {
+        opacity: 0;
+    }
+
+    .guide-btn-text {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+    }
+
+    .guide-picker {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+    }
+
+    .guide-grant-tile {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guide-speech-word > span {
+        transition: none;
+    }
+}
+
+/* on the tour she sits on busy page elements (vines, dark buttons): a paper halo keeps her ink legible */
+.guide-cat.is-touring .guide-cat-glyph {
+    filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 5px rgba(255, 255, 255, 0.95));
+}

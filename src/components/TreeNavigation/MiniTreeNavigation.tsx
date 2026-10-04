@@ -21,7 +21,6 @@ export const MiniTreeNavigation: React.FC = () => {
     { id: 'about', label: 'о проекте', path: '/', pattern: 'M10,15 Q20,10 30,15 T50,15' },
     { id: 'notes', label: 'записи', path: '/notes', pattern: 'M20,10 Q30,5 40,10 T60,10' },
     { id: 'search', label: 'поиск', path: '/search', pattern: 'M10,20 C15,10 25,30 30,20' },
-    { id: 'philosophy', label: 'философия', path: '/philosophy', pattern: 'M15,15 Q25,5 35,15 Q45,25 55,15' },
     { id: 'person', label: 'профиль', path: '/person', pattern: 'M10,25 C20,15 30,35 40,25' },
     { id: 'login', label: 'вход', path: '/login', pattern: 'M20,15 Q30,25 40,15 T60,15' },
   ];
