@@ -24,7 +24,7 @@ import {
     setQuietToday,
     todayKey,
 } from "./onboardingState";
-import { TOUR, TOUR_END, TOUR_SKIPPED, chatter, timeOfDayKey } from "./companionLines";
+import { TOUR, TOUR_AGAIN_END, TOUR_END, TOUR_SKIPPED, chatter, timeOfDayKey } from "./companionLines";
 import { GuideEntry, OnboardingContext } from "./OnboardingContext";
 import { loginRequest, regRequest } from "../../api/Login";
 import { GetAuthors, GetDictByAuthorID, GetPostsByAuthorID, SaveDict, SendPost } from "../../requests/Api";
@@ -218,6 +218,11 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
     const tourTarget = useRef<{ el: HTMLElement; place: "top" | "right" } | null>(null);
     const spotted = useRef<HTMLElement | null>(null);
     const hopping = useRef(false);
+    const tourNavigating = useRef(false);
+    // the tour asked for again from the profile or the cat: other words, no «до завтра»
+    const tourAgain = useRef(false);
+    // asked for while she was still landing on the frame: she starts as soon as she sits
+    const tourWanted = useRef(false);
     const [companion, setCompanion] = useState<CompanionState | null>(null);
     const [wheel, setWheel] = useState<WheelState>(WHEEL_IDLE);
     const [granted, setGranted] = useState<GlyphKey | null>(null);
@@ -576,7 +581,11 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
         const nowGuest = isGuest();
         setGuest(nowGuest);
         const onLogin = location.pathname.startsWith("/login");
-        // the author walked off mid-tour: she wraps it up on the frame
+        // the author walked off mid-tour: she wraps it up on the frame (unless she led them there herself)
+        if (phase === "touring" && tourNavigating.current) {
+            tourNavigating.current = false;
+            return;
+        }
         if (phase === "touring") {
             setTourIndex(TOUR.length);
             return;
@@ -966,8 +975,16 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
         nod();
         boost(4, 900);
         if (phase === "seated") {
-            if (canSpinToday(companion?.record ?? null)) offerWheel();
-            else say(chatter("purr"), { force: true });
+            // a purr, and what she can do for an author: the walk around the site, the wheel if it is due
+            say(chatter("purr"), {
+                sticky: true,
+                actions: [
+                    { label: "покажи сайт", onClick: openTour },
+                    canSpinToday(companion?.record ?? null)
+                        ? { label: "крутить", primary: true, onClick: openWheel }
+                        : { label: "потом", onClick: () => hideBubble() },
+                ],
+            });
         }
     };
 
@@ -1272,11 +1289,12 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
         spotted.current = null;
     };
 
-    const waitFor = async (selector: string, ms: number) => {
+    const waitFor = async (selector: string, ms: number, skipText?: string) => {
         const until = performance.now() + ms;
         while (performance.now() < until) {
             const el = Array.from(document.querySelectorAll<HTMLElement>(selector)).find((e) => {
                 const r = e.getBoundingClientRect();
+                if (skipText && e.textContent?.trim() === skipText) return false;
                 return r.width > 0 && r.height > 0;
             });
             if (el) return el;
@@ -1298,9 +1316,14 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
         const finish = () => {
             unspot();
             tourTarget.current = null;
-            const end = () => say(TOUR_END, {
+            const again = tourAgain.current;
+            const end = () => say(again ? TOUR_AGAIN_END : TOUR_END, {
                 sticky: true,
-                actions: [{ label: "до завтра", primary: true, onClick: () => { playButtonSound(); hideBubble(); setPhase("seated"); } }],
+                actions: [{
+                    label: again ? "спасибо" : "до завтра",
+                    primary: true,
+                    onClick: () => { playButtonSound(); hideBubble(); tourAgain.current = false; setPhase("seated"); },
+                }],
             });
             const seat = framePose();
             if (!seat || Math.hypot(seat.x - pose.current.x, seat.y - pose.current.y) < 4) {
@@ -1316,11 +1339,18 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
                 finish();
                 return;
             }
+            // a stop on another page: she leads the author there and waits for the page to come in
+            if (stop.path && window.location.pathname !== stop.path) {
+                tourNavigating.current = true;
+                navigate(stop.path);
+                await wait(900);
+                if (!alive) return;
+            }
             // the first stop waits for the author page to load and scroll to the new note
             await wait(tourIndex === 0 ? 1100 : 120);
             const el = stop.place === "frame"
                 ? document.querySelector<HTMLElement>(stop.selector)
-                : await waitFor(stop.selector, 6000);
+                : await waitFor(stop.selector, 6000, stop.notSelf ? login.trim() || undefined : undefined);
             if (!alive) return;
             if (!el) {
                 setTourIndex((i) => i + 1);
@@ -1346,7 +1376,7 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
                 }
                 boost(3, 300);
                 const last = tourIndex === TOUR.length - 1;
-                say(stop.line, {
+                say(tourAgain.current && stop.again ? stop.again : stop.line, {
                     sticky: true,
                     actions: [
                         ...(last ? [] : [{ label: "хватит", onClick: () => setTourIndex(TOUR.length) }]),
@@ -1867,7 +1897,48 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
         </>
     );
 
-    const contextValue = useMemo(() => ({ guest, openGuide, openWheel }), [guest, openGuide, openWheel]);
+    // the tour again, for an author: she goes to their page (from wherever she sits) and starts over
+    const openTour = useCallback(() => {
+        if (isGuest()) {
+            openGuide("intro");
+            return;
+        }
+        const p = live.current.phase;
+        if (p === "touring") return;
+        if (p !== "seated" && p !== "hidden") {
+            tourWanted.current = true;
+            return;
+        }
+        tourWanted.current = false;
+        const id = safeLocalStorage.getItem("ID");
+        if (!id) return;
+        playButtonSound();
+        hideBubble();
+        tourAgain.current = true;
+        if (window.location.pathname !== `/author/${id}`) {
+            tourNavigating.current = true;
+            navigate(`/author/${id}`);
+        }
+        if (p === "hidden") {
+            // she was away (a quiet day, a page without the frame): she comes back to her seat first
+            const seat = framePose();
+            if (seat) pose.current = seat;
+            setSeatShown(true);
+            requestAnimationFrame(() => {
+                applyPose();
+                gsap.to(catRef.current, { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+            });
+        }
+        setTourIndex(0);
+        setPhase("touring");
+    }, [openGuide, playButtonSound, hideBubble, navigate, framePose, applyPose]);
+
+    useEffect(() => {
+        if ((phase === "seated" || phase === "hidden") && tourWanted.current) openTour();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [phase]);
+
+    const contextValue = useMemo(() => ({ guest, openGuide, openWheel, openTour }), [guest, openGuide, openWheel, openTour]);
 
     return (
         <OnboardingContext.Provider value={contextValue}>
