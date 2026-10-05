@@ -205,9 +205,16 @@ export function timeOfDayKey(): ChatterKey {
     return "idle";
 }
 
-// the tour after the first note: she walks the author around their own page
+// the tour after the first note: she walks the author around their own page, then takes them
+// where the reading is — other authors' work and the almanac's editorial notes
 export interface TourStop {
+    /** the page the stop is on; she leads the author there herself */
+    path?: string;
     selector: string;
+    /** skip the element that is the author's own (their card in the search) */
+    notSelf?: boolean;
+    /** what she says at this stop when the tour is asked for again, not after the first note */
+    again?: string;
     line: string;
     place: "top" | "right" | "frame";
     scroll?: boolean;
@@ -219,28 +226,47 @@ export const TOUR: TourStop[] = [
         place: "top",
         scroll: true,
         line: "вот она, твоя первая. завтра над ней ляжет следующая — архив растёт сверху.",
+        again: "это твой архив. каждая новая запись ложится сверху, старые не меняются — так и задумано.",
     },
     {
         selector: ".companion-shelf",
         place: "top",
         scroll: true,
         line: "а это твоя полка. первый компаньон уже тут, и его видят все, кто к тебе заходит. пропадёшь на три дня — уйдёт. таймер вот он.",
+        again: "твоя полка. компаньонов видят все, кто к тебе заходит. пропадёшь на три дня — уйдут. таймер вот он.",
     },
     {
         selector: ".author-nav-item",
         place: "top",
         scroll: true,
         line: "здесь словарь. двенадцать знаков, смысл каждому даёшь ты. один у тебя уже есть.",
+        again: "здесь словарь. двенадцать знаков, смысл каждому даёшь ты.",
     },
     {
         selector: ".author-nav-item:nth-child(2)",
         place: "top",
         line: "это «написать». до завтра не откроется — я проверяла, лапой.",
+        again: "это «написать». одна запись в день — не больше, я слежу.",
     },
     {
         selector: ".mini-tree-toggle",
         place: "right",
-        line: "а это дерево — навигация. записи альманаха, поиск авторов, твой профиль: всё растёт отсюда.",
+        line: "а это дерево — навигация. всё растёт отсюда. пойдём, покажу две ветки, куда стоит заглядывать.",
+    },
+    {
+        path: "/search",
+        selector: ".author-card",
+        notSelf: true,
+        place: "top",
+        scroll: true,
+        line: "здесь чужие работы. у каждого автора свой язык: открой любого и читай его архив. наведи на знак в записи — увидишь, что он значит у него.",
+    },
+    {
+        path: "/notes",
+        selector: ".notice-item",
+        place: "top",
+        scroll: true,
+        line: "а это заметки редакции альманаха. длинные тексты, их пишут не за день. читай медленно — они так и написаны.",
     },
     {
         selector: ".page-frame-sidebar",
@@ -250,4 +276,5 @@ export const TOUR: TourStop[] = [
 ];
 
 export const TOUR_END = "на сегодня всё. заходи завтра — познакомлю с остальными знаками. будет колесо.";
+export const TOUR_AGAIN_END = "вот и всё. если заблудишься — я на рамке, позови.";
 export const TOUR_SKIPPED = "ладно, разберёшься. но завтра заходи — будет колесо и новые знакомые.";

@@ -16,6 +16,7 @@ import { useLoader } from "../../contexts/LoaderContext";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import { CompanionShelf } from "../../components/Companions/CompanionShelf";
 import { isServiceEntry } from "../../components/Companions/companions";
+import { useOnboarding } from "../../components/Onboarding/OnboardingContext";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -41,6 +42,7 @@ export const AuthorPage: React.FC = () => {
     const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const { openTour } = useOnboarding();
 
     useEffect(() => {
         if (!id) {
@@ -258,6 +260,10 @@ export const AuthorPage: React.FC = () => {
                                         <button className="author-nav-item" onClick={() => { setIsWritePostModalOpen(true); playB(); }}>
                                             <span>написать</span>
                                             <span className="nav-icon">✍️</span>
+                                        </button>
+                                        <button className="author-nav-item" onClick={openTour}>
+                                            <span>экскурсия</span>
+                                            <span className="nav-icon">🐈</span>
                                         </button>
                                         <button className="author-nav-item logout" onClick={() => { playB(); logout(); }}>
                                             <span>выйти</span>
