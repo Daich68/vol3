@@ -27,8 +27,18 @@ export const Gifs = [
     { tag: ":gif-bnd:", src: bnd, alt: "bnd GIF" },
 ];
 
+// Post text and dictionary meanings come from any registered user and are
+// injected as HTML, so escape them before gif tags are swapped for markup.
+const escapeHtml = (value: string) =>
+    value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
 export const DisplayGif = (text: string) => {
-    let updatedText = text;
+    let updatedText = escapeHtml(text);
     Gifs.forEach((gif) => {
         const regex = new RegExp(gif.tag, "g");
         updatedText = updatedText.replace(
@@ -40,7 +50,7 @@ export const DisplayGif = (text: string) => {
 };
 
 export const DisplayGifWithMean = (text: string, dict: DictEntry[]) => {
-    let updatedText = text;
+    let updatedText = escapeHtml(text);
     Gifs.forEach((gif) => {
         const entry = dict.find((entry) => entry.gif_tag === gif.tag);
 
@@ -51,7 +61,7 @@ export const DisplayGifWithMean = (text: string, dict: DictEntry[]) => {
                   <img style="width: 8rem" src="${gif.src}" alt="${gif.alt}" class="gif-image"/>
                 <span class="gif-tooltip">
                     <span class="gif-tooltip-header"><span>SYNTAX_DECODE</span></span>
-                    <span class="gif-tooltip-meaning">${entry?.meaning || "?"}</span>
+                    <span class="gif-tooltip-meaning">${entry?.meaning ? escapeHtml(entry.meaning) : "?"}</span>
                 </span>
             </span>`
         );

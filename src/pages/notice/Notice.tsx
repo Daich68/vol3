@@ -7,6 +7,7 @@ import { GetPrettyTimePub } from "../../utils/DatetimeUtils";
 import { PageFrame } from "../../components/PageFrame/PageFrame";
 import { ScrollProgress } from "../../components/ScrollProgress/ScrollProgress";
 import gsap from "gsap";
+import DOMPurify from "dompurify";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./Notice.css";
 
@@ -190,7 +191,7 @@ export const NoticePage: React.FC = () => {
                         </header>
                         <div
                             className="article-body"
-                            dangerouslySetInnerHTML={{ __html: selectedNotice.text_html }}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedNotice.text_html) }}
                         />
                         <div style={{ marginTop: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
                             <button
